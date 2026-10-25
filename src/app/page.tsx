@@ -3,6 +3,8 @@ import { Navigation } from "@/components/navigation";
 import { Services } from "@/components/services";
 import { MotionPlayer } from "@/components/motion-player";
 import { MotionDirector } from "@/components/motion-director";
+import { CrystalLogo } from "@/components/crystal-logo";
+import { MotionToggle } from "@/components/motion-toggle";
 import { ArrowRightIcon, ArrowUpRightIcon, AsteriskIcon, InstagramLogoIcon } from "@/components/icons";
 import { projects, site } from "@/content/site";
 
@@ -14,7 +16,8 @@ export default function Home() {
       <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <Navigation />
       <main id="conteudo">
-        <section id="inicio" className="hero" aria-labelledby="hero-title">
+        <section id="inicio" className="hero" aria-labelledby="hero-title" data-motion-surface>
+          <div className="hero-light ambient-motion" aria-hidden="true" />
           <div className="hero-layout shell">
             <div className="hero-copy">
               <p className="eyebrow">Criatividade que conecta.</p>
@@ -23,17 +26,23 @@ export default function Home() {
               <a className="button button-lime" href="#projetos">Nosso universo <ArrowUpRightIcon size={22} aria-hidden /></a>
             </div>
             <div className="hero-art">
+              <div className="hero-grid" aria-hidden="true" />
               <div className="hero-orbit hero-orbit-secondary" aria-hidden="true" />
               <div className="hero-parallax">
                 <div className="hero-pointer">
                   <div className="hero-orbit hero-orbit-main" aria-hidden="true" />
-                  <div className="brand-stage"><Brand priority className="hero-brand" /></div>
-                  <span className="orbit-satellite" aria-hidden="true"><AsteriskIcon weight="bold" /></span>
+                  <CrystalLogo />
+                  <span className="orbit-satellite ambient-motion" aria-hidden="true"><AsteriskIcon weight="bold" /></span>
+                  <div className="crystal-glints" aria-hidden="true">{Array.from({length:7},(_,index) => <i className="ambient-motion" key={index} />)}</div>
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        <div className="discipline-marquee" data-motion-surface aria-hidden="true">
+          <div className="discipline-track ambient-motion">{[0,1,2,3].map((copy) => <div key={copy}>{["Produção","Design","Marketing"].map((word) => <span key={word}>{word}<AsteriskIcon weight="bold" /></span>)}</div>)}</div>
+        </div>
 
         <section className="manifesto-section" aria-labelledby="manifesto-title">
           <div className="manifesto-inner shell">
@@ -51,9 +60,9 @@ export default function Home() {
           <Services />
         </section>
 
-        <section className="projects-section section-space" id="projetos" aria-labelledby="projects-title">
+        <section className="projects-section section-space" id="projetos" aria-labelledby="projects-title" data-motion-surface>
           <div className="shell">
-            <div className="section-heading" data-reveal><h2 id="projects-title">Entre no nosso<br /><span className="outlined">universo.</span><span className="small-star" aria-hidden="true"><AsteriskIcon weight="bold" /></span></h2><p>Um olhar para a identidade que nos coloca em movimento.</p></div>
+            <div className="section-heading" data-reveal><h2 id="projects-title">Entre no nosso<br /><span className="outlined">universo.</span><span className="small-star" aria-hidden="true"><AsteriskIcon weight="bold" /></span></h2><p>Uma conversa sobre o cuidado por trás de cada projeto.</p></div>
             {projects.map((project) => <article className="featured-project" key={project.id} data-reveal>
               <MotionPlayer project={project} />
               <div className="project-caption"><h3>{project.title}</h3><span>{project.category}</span></div>
@@ -62,8 +71,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="about-section section-space shell" id="sobre" aria-labelledby="about-title">
-          <div className="about-visual" aria-hidden="true"><div className="about-disc"><AsteriskIcon weight="bold" /></div><span className="about-outline">L</span></div>
+        <section className="about-section section-space shell" id="sobre" aria-labelledby="about-title" data-motion-surface>
+          <div className="about-visual" aria-hidden="true"><div className="about-disc"><AsteriskIcon className="ambient-motion" weight="bold" /></div><span className="about-outline">L</span></div>
           <div className="about-copy" data-reveal>
             <p className="section-label">Prazer, Loomy.</p>
             <h2 id="about-title">De Alagoas.<br />De muitas <span className="muted">ideias.</span></h2>
@@ -73,8 +82,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="contact-section" id="contato" aria-labelledby="contact-title">
+        <section className="contact-section" id="contato" aria-labelledby="contact-title" data-motion-surface>
           <div className="contact-disc" aria-hidden="true" />
+          <div className="contact-orbit ambient-motion" aria-hidden="true" />
           <div className="contact-content shell">
             <p>Tem uma ideia por aí?</p>
             <h2 id="contact-title">Bora dar<br />o próximo <span>passo?</span></h2>
@@ -88,6 +98,7 @@ export default function Home() {
         <p>Produção, design e marketing.<br /><span>Feito de ideias. Feito em Alagoas.</span></p>
         <a className="footer-social" href={site.instagram} target="_blank" rel="noopener noreferrer" aria-label="Loomy no Instagram, abre em nova aba"><InstagramLogoIcon size={24} aria-hidden /><ArrowUpRightIcon size={16} aria-hidden /></a>
       </footer>
+      <MotionToggle />
       <MotionDirector />
     </>
   );

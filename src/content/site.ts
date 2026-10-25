@@ -1,4 +1,4 @@
-import motionPoster from "../../public/media/loomy-motion-poster.webp";
+import motionPoster from "../../public/media/loomy-film-poster.webp";
 
 export const site = {
   name: "Loomy",
@@ -43,19 +43,25 @@ export type Project = {
   id: string;
   title: string;
   category: string;
-  kind: "brand-reference" | "client-project";
+  kind: "brand-reference" | "brand-film" | "client-project";
   poster: string;
+  posterAlt: string;
+  width: number;
+  height: number;
   video?: string;
   description: string;
 };
 
-// Add only approved projects. This supplied reference is not a client case.
+// The presentation supplied by the owner is not a client case.
 export const projects: Project[] = [{
   id: "loomy-motion",
-  title: "A identidade em movimento",
-  category: "Referência visual da marca",
-  kind: "brand-reference",
+  title: "Por trás das ideias",
+  category: "Vídeo de apresentação",
+  kind: "brand-film",
   poster: motionPoster.src,
-  video: "/media/loomy-motion.mp4",
-  description: "Um recorte do material de referência enviado. Cor, profundidade e movimento no universo Loomy.",
+  posterAlt: "Apresentação em vídeo em um estúdio de fundo escuro, com legendas em português",
+  width: 720,
+  height: 1280,
+  video: "/media/loomy-film.mp4",
+  description: "Uma conversa sobre o cuidado com cada projeto.",
 }];

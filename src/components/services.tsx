@@ -21,7 +21,7 @@ export function Services() {
               </button>
             </h3>
             <div id={`service-panel-${service.id}`} role="region" aria-labelledby={`service-button-${service.id}`} className="service-panel" hidden={!expanded}>
-              <div className={`service-art service-art-${service.visual}`} aria-hidden="true">
+              <div className={`service-art service-art-${service.visual}`} aria-hidden="true" data-motion-surface>
                 {service.visual === "frame" ? <><i /><span>REC</span><div className="frame-play">↗</div></> : null}
                 {service.visual === "type" ? <><span>Aa</span><i /></> : null}
                 {service.visual === "orbit" ? <><i /><i /><span>↗</span></> : null}

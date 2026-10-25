@@ -31,18 +31,19 @@ export function MotionPlayer({ project }: { project: Project }) {
 
   return (
     <>
-      <button ref={opener} type="button" className="project-preview" onClick={open} aria-label={`Ver motion: ${project.title}`} aria-haspopup="dialog">
-        <Image src={project.poster} alt="Identidade Loomy branca com camadas cromáticas sobre fundo escuro" width={1170} height={540} sizes="(max-width: 767px) 92vw, 84vw" />
-        <span className="play-button"><PlayIcon size={25} weight="fill" aria-hidden /><span>Ver motion</span></span>
+      <button ref={opener} type="button" className="project-preview is-portrait" onClick={open} aria-label={`Ver vídeo: ${project.title}`} aria-haspopup="dialog">
+        <span className="project-orbit ambient-motion" aria-hidden="true" />
+        <Image className="project-poster" src={project.poster} alt={project.posterAlt} width={project.width} height={project.height} sizes="(max-width: 767px) 92vw, 420px" />
+        <span className="play-button"><PlayIcon size={25} weight="fill" aria-hidden /><span>Ver vídeo</span></span>
       </button>
-      <dialog ref={dialog} className="motion-dialog" aria-labelledby="motion-title" onClick={(event) => { if (event.target === event.currentTarget) dialog.current?.close(); }}>
+      <dialog ref={dialog} className="motion-dialog is-portrait" aria-labelledby="motion-title" onClick={(event) => { if (event.target === event.currentTarget) dialog.current?.close(); }}>
         <div className="dialog-inner">
           <div className="dialog-heading"><h3 id="motion-title">{project.title}</h3><button className="dialog-close" type="button" aria-label="Fechar vídeo" onClick={() => dialog.current?.close()}><XIcon size={26} aria-hidden /></button></div>
-          <video ref={video} controls playsInline preload="none" poster={project.poster} onError={() => setError(true)} aria-label="Animação de referência da identidade Loomy, sem áudio">
+          <video ref={video} controls playsInline preload="none" poster={project.poster} onError={() => setError(true)} aria-label="Por trás das ideias. Vídeo de apresentação com áudio e legendas incorporadas">
             <source src={project.video} type="video/mp4" />
             Seu navegador não suporta vídeo HTML5.
           </video>
-          {error ? <p role="alert">Não foi possível carregar o vídeo. <a href={project.video}>Abrir o arquivo</a></p> : <p>Recorte da referência enviada. Vídeo sem áudio.</p>}
+          {error ? <p role="alert">Não foi possível carregar o vídeo. <a href={project.video}>Abrir o arquivo</a></p> : <p>Vídeo completo, com áudio e legendas no próprio vídeo.</p>}
         </div>
       </dialog>
     </>
