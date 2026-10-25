@@ -4,12 +4,13 @@ export function Brand({ className = "", priority = false }: { className?: string
   return (
     <Image
       className={`brand-image ${className}`}
-      src="/media/loomy-reference-wordmark.png"
+      src={priority ? "/media/loomy-reference-wordmark.webp" : "/media/loomy-wordmark-small.webp"}
       alt="Loomy"
-      width={963}
-      height={426}
+      width={642}
+      height={284}
       priority={priority}
-      sizes={priority ? "(max-width: 767px) 80vw, 42vw" : "160px"}
+      fetchPriority={priority ? "high" : undefined}
+      sizes={priority ? "(max-width: 767px) 92vw, (max-width: 1536px) 46vw, 610px" : "(max-width: 767px) 120px, 145px"}
     />
   );
 }

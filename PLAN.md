@@ -7,7 +7,7 @@ Vitrine em português com seis momentos: hero, manifesto, serviços, portfólio,
 ## Decisões
 
 - Next.js App Router e conteúdo em Server Components. TypeScript estrito, Tailwind v4 e tokens CSS centralizados.
-- GSAP/ScrollTrigger para sequência de entrada, profundidade por scroll e expansão do círculo de contato. Sem Three.js, smooth-scroll artificial ou estado React por frame.
+- CSS para entrada sem ocultar conteúdo. GSAP/ScrollTrigger sob demanda no desktop para profundidade por scroll e expansão do círculo de contato; mobile usa CSS scroll-driven com fallback estático. Sem Three.js, smooth-scroll artificial ou estado React por frame.
 - Folhas client isoladas para navegação mobile, serviços e media player. Dados comerciais separados em `src/content/site.ts`.
 - Mídia fornecida preservada. O MP4 é uma filmagem de tela de referência, não um showreel final: não expor preços ou telas alheias como cases Loomy.
 - Sem analytics, formulário que simula envio, backend ou dependências comerciais.

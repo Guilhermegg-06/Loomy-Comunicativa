@@ -160,6 +160,23 @@ h2 { font-size: clamp(38px, 4.4vw, 65px); line-height: 1.08; font-weight: 500; l
 .not-found { min-height: 85dvh; display: flex; flex-direction: column; align-items: start; justify-content: center; gap: 30px; }
 .not-found h1 { font-size: clamp(36px, 6vw, 80px); line-height: 1.05; letter-spacing: -.06em; }
 
+@keyframes hero-entry { from { transform: translateY(20px); } to { transform: translateY(0); } }
+@keyframes mobile-depth { from { transform: rotate(-7deg) translateY(0); } to { transform: rotate(-3deg) translateY(35px); } }
+@keyframes contact-expansion { from { transform: translate(-50%, -50%) scale(.7); } to { transform: translate(-50%, -50%) scale(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy > * { animation: hero-entry .8s cubic-bezier(.2,.7,.3,1) both; }
+  .hero-copy > :nth-child(2) { animation-delay: .06s; }
+  .hero-copy > :nth-child(3) { animation-delay: .12s; }
+  .hero-copy > :nth-child(4) { animation-delay: .18s; }
+}
+@supports (animation-timeline: view()) {
+  @media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+    .hero-art { animation: mobile-depth linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+    .contact-section { view-timeline-name: --contact; }
+    .contact-disc { animation: contact-expansion linear both; animation-timeline: --contact; animation-range: entry 0% entry 80%; }
+  }
+}
+
 @media (min-width: 1600px) { .hero-layout { min-height: 760px; } }
 @media (max-width: 1100px) {
   .shell { width: calc(100% - 64px); }

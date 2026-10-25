@@ -59,4 +59,3 @@ export const projects: Project[] = [{
   video: "/media/loomy-motion.mp4",
   description: "Um recorte do material de referência enviado. Cor, profundidade e movimento no universo Loomy.",
 }];
-
