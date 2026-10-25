@@ -31,7 +31,7 @@ export function MotionPlayer({ project }: { project: Project }) {
 
   return (
     <>
-      <button ref={opener} type="button" className="project-preview" onClick={open} aria-label={`Assistir: ${project.title}`} aria-haspopup="dialog">
+      <button ref={opener} type="button" className="project-preview" onClick={open} aria-label={`Ver motion: ${project.title}`} aria-haspopup="dialog">
         <Image src={project.poster} alt="Identidade Loomy branca com camadas cromáticas sobre fundo escuro" width={1170} height={540} sizes="(max-width: 767px) 92vw, 84vw" />
         <span className="play-button"><PlayIcon size={25} weight="fill" aria-hidden /><span>Ver motion</span></span>
       </button>
