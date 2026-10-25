@@ -2,6 +2,8 @@
 
 Website vitrine da Loomy, agência alagoana de produção, design e marketing.
 
+[Ver prévia do hero com a logo cristal 3D](docs/preview-crystal.png).
+
 ## Rodar localmente
 
 Requisitos: Node.js 22+ e npm. Não exige `.env`, banco ou contas externas.
@@ -28,25 +30,29 @@ npx playwright install chromium
 npm test
 ```
 
-O Playwright inicia e encerra o servidor de produção automaticamente, ou reutiliza um servidor local já aberto. Os testes cobrem desktop e celular, navegação, menu/teclado, serviços expansíveis, reprodução e fechamento de vídeo, links de contato, overflow, axe WCAG AA e mudança de preferência de movimento. O teste de cursor é restrito ao desktop. Capturas e traces ficam em `test-results/`.
+O Playwright inicia e encerra o servidor de produção automaticamente, ou reutiliza um servidor local já aberto. Os testes cobrem desktop e celular, navegação, menu/teclado, serviços expansíveis, vídeo completo com áudio, links de contato, overflow, axe WCAG AA, pausa de efeitos e reduced motion. A logo 3D é validada por controles, teclado e arraste, incluindo toque no mobile e fallback sem WebGL. Capturas e traces ficam em `test-results/`.
 
 O workflow `.github/workflows/quality.yml` executa essas verificações em PRs. As execuções remotas precisam ser confirmadas no GitHub; resultado local não significa CI remota aprovada.
 
 ## Estrutura
 
 - `src/app`: homepage, layout, metadados, página 404 e tokens/estilos responsivos.
-- `src/components`: navegação, identidade, serviços, player e diretor de motion isolado.
+- `src/components`: navegação, identidade, serviços, player, cena cristal 3D e motion isolado.
 - `src/content/site.ts`: canais, navegação, serviços e catálogo tipado de projetos.
-- `public/media`: wordmark extraído e recorte da referência com procedência documentada.
+- `public/media`: logo cristal, contornos medidos, vídeo completo e poster, com procedência documentada.
 - `public/fonts`: Space Grotesk auto-hospedada e licença OFL.
 - `tests`: verificações de fluxo e acessibilidade em navegador real.
 - `PLAN.md` e `STATUS.md`: decisões e checkpoint concisos.
 
 ## Conteúdo e identidade
 
-A direção combina fundo escuro, verde-limão, tipografia sans, órbitas e deslocamento cromático do próprio material fornecido. No desktop, GSAP/ScrollTrigger é carregado sob demanda para leitura progressiva, parallax e o círculo de contato. Mobile usa transformações CSS vinculadas ao scroll quando suportadas, com fallback estático. A entrada usa CSS e não oculta o conteúdo. O scroll permanece nativo. `prefers-reduced-motion` desliga animações e parallax; touch não recebe efeito de cursor.
+A direção combina fundo escuro, verde-limão e o cristal azulado da arte enviada pelo proprietário. A logo no header, hero e footer usa o novo PNG convertido para WebP, preservando os pixels e a transparência. A cena Three.js extruda o contorno do alpha e aplica a arte original às faces, com laterais e luzes próprias. Trata-se de um volume gerado da imagem, não de um master 3D fornecido.
 
-O vídeo fornecido é uma filmagem de monitor. O site usa apenas um recorte da referência da identidade, identificado como tal; não é um case de cliente. A logo branca foi extraída de um frame, sem redesenho. A imagem circular verde da conversa não veio como arquivo acessível: seu master ainda deve ser adicionado. Consulte `public/media/README.md`.
+Arraste a logo ou use as setas do teclado; Home e o botão de restaurar retornam à posição frontal. No desktop, o 3D carrega depois da primeira imagem; no celular e com movimento reduzido, use **Explorar 3D**. A imagem permanece disponível quando WebGL falha. O render limita resolução/fps, para fora da tela ou em aba oculta e libera recursos ao desmontar.
+
+Órbitas, brilhos, uma faixa tipográfica e detalhes dos serviços ampliam a direção de motion. As animações contínuas param fora da tela. **Pausar efeitos** interrompe animações e motion automático; interações manuais continuam disponíveis. `prefers-reduced-motion` é respeitado. GSAP/ScrollTrigger continua sob demanda no desktop; mobile usa CSS scroll-driven quando suportado, com fallback estático. O scroll permanece nativo e gestos verticais no canvas permitem navegar pela página.
+
+O player agora usa o novo vídeo enviado pelo proprietário: 20,87s, 720×1280, completo, sem crop e com áudio original. As legendas são as incorporadas à imagem do próprio vídeo; não foi criada uma nova transcrição. A versão anterior filmada do monitor deixou de ser exibida. Consulte `public/media/README.md`.
 
 Os textos são propostas editoriais. Serviços específicos, textos, direitos dos assets e contato devem ser aprovados pelo proprietário antes de publicação. Não há clientes, depoimentos, resultados ou WhatsApp inventados. Instagram é o canal informado no briefing. Não há formulário que simule envio.
 
