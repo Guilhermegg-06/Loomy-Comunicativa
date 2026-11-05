@@ -10,7 +10,7 @@ A experiência abre com a paisagem enviada pelo proprietário e a logo cristal i
 
 ## Rodar localmente
 
-Node.js 22+ e npm. Sem banco, credenciais ou `.env`.
+Node.js 22.x e npm. A versão está em `.nvmrc`, no manifesto e na CI. Sem banco, credenciais ou `.env`.
 
 ```sh
 npm ci
@@ -50,6 +50,8 @@ O briefing é preparado no navegador. O botão tenta copiá-lo e oferece o Insta
 
 ## Revisão e Git
 
-Branch desta entrega: `design/vale-cristal`, baseada em `8c4144d` da `design/grau-loomy`. A fundação ainda não foi integrada à main; considerar esse encadeamento antes de uma PR. As versões anteriores permanecem no histórico e em seus componentes.
+Versão aprovada integrada à `main` pelo commit `2241cb7`, a partir da `design/vale-cristal` (`33ac044`). A fundação e as etapas de design permanecem no histórico.
 
-Sem merge ou deploy de produção. `noindex` permanece ativo para revisão. Domínio canônico e OG final dependem da publicação aprovada. A fotografia de litoral é uma ambientação gerada por IA e não representa um cliente ou produção real. Textos comerciais continuam sujeitos à aprovação do proprietário.
+O repositório está preparado para deploy na Vercel com Next.js nativo, instalação pelo lockfile e Node.js 22.x. Configuração, importação e estado remoto em [DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md). Nenhum deploy foi executado nesta preparação.
+
+`noindex` permanece ativo para revisão. Domínio canônico e OG final dependem da publicação aprovada. A fotografia de litoral é uma ambientação gerada por IA e não representa um cliente ou produção real. Textos comerciais continuam sujeitos à aprovação do proprietário.

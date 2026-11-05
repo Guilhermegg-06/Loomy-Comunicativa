@@ -1,4 +1,25 @@
-# Validação: abertura cristal no vale — 05/11/2026
+# Validação: integração na main e preparação Vercel — 05/11/2026
+
+A main recebeu primeiro o commit de integração `2241cb7`, cuja árvore preserva a versão aprovada `33ac044`. O conflito do README antigo foi resolvido com a documentação completa atual; a remoção anterior da orientação antiga da main foi respeitada.
+
+O commit seguinte prepara Node.js 22.x, instalação pelo lockfile, build Next.js nativo, CI usando `.nvmrc` e exclusões de arquivos locais/de revisão com `.vercelignore`. Sem alterações no código visual, nas dependências resolvidas ou em variáveis de ambiente. Detalhes em [DEPLOY_VERCEL.md](DEPLOY_VERCEL.md).
+
+| Verificação da preparação | Resultado |
+| --- | --- |
+| Instalação limpa | `npm ci --include=dev` aprovado em cópia isolada, com Node 22.20.0 e npm 10.9.3 |
+| Manifesto e lockfile | Runtime 22.x consistente, sem mudança das versões resolvidas |
+| Lint e tipos | `npm run lint` e `npm run typecheck` aprovados |
+| Build | `npm run build` aprovado, com homepage e 404 pré-renderizadas |
+| Pacote de deploy | Configuração JSON válida; 11 arquivos essenciais conferidos, incluindo mídias e fonte; documentação, capturas e arquivos locais excluídos |
+| Runtime Linux | Lockfile inclui os binários opcionais Linux de Next.js e Tailwind |
+| Dependências de produção | `npm audit --omit=dev`: zero vulnerabilidades reportadas |
+| Navegação após instalação limpa | 17 testes aprovados em Chromium desktop/mobile e WebKit mobile; 1 dispensado por repetir o fallback compartilhado |
+
+O audit completo apontou oito avisos moderados na cadeia de ferramentas de lint, associados a `minimatch`. Sem avisos altos/críticos. A correção sugerida pelo npm envolve mudança incompatível de `eslint-config-next`; não foi aplicada uma atualização forçada ou downgrade de framework nesta preparação. Esse resultado não equivale a uma garantia de ausência de falhas.
+
+A consulta ao conector Vercel retornou zero projetos associados ao repositório e zero equipes na conta acessível. A CLI não estava instalada. Não houve instalação global da CLI, criação/vínculo de projeto, deploy, mudança de DNS ou credenciais. A preparação do repositório não afirma que um build remoto foi executado.
+
+## Histórico: abertura cristal no vale — 05/11/2026
 
 Branch `design/vale-cristal`, base `8c4144d`. Produção local Next.js 16.4.3. História verificada: paisagem enviada e marca cristal inteira → primeiro scroll pelos O da arte → oito etapas aprovadas → vídeo → briefing local → Instagram informado.
 
