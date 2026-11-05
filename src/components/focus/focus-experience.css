@@ -1,0 +1,172 @@
+/* Grau reference: a continuous fullscreen stage. The two O's are the visual
+   device for sharpness. Layers: worlds 0/1, letters 2, interface 3, header 4.
+   Native scroll snap and the same scene renderer are used on touch and mouse. */
+body:has(.focus-experience) { overflow: hidden; background: #050505; }
+.focus-experience { --focus-ink: #f7f7f5; --focus-muted: #c5c5c2; --focus-line: #777774; position: fixed; inset: 0; background: #050505; color: var(--focus-ink); isolation: isolate; }
+.focus-experience.is-light { --focus-ink: #101110; --focus-muted: #414340; --focus-line: #727570; }
+.focus-scroll { position: absolute; inset: 0; height: 100svh; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; scroll-snap-type: y mandatory; scrollbar-width: none; outline: none; touch-action: pan-y; }
+.focus-scroll::-webkit-scrollbar { display: none; }
+.focus-waypoint { height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
+.focus-stage { position: fixed; inset: 0; height: 100svh; overflow: hidden; pointer-events: none; }
+.focus-world { position: absolute; inset: 0; overflow: hidden; color: #f6f6f4; }
+.focus-soft { filter: blur(8px); transform: scale(1.025); }
+.focus-clear { clip-path: url(#loomy-focus-lenses); z-index: 1; }
+.focus-clip-defs { position: absolute; }
+.focus-world-panel { position: absolute; inset: 0; opacity: 0; visibility: hidden; background: #050505; }
+.focus-world-panel:first-child { opacity: 1; visibility: visible; }
+.world-title { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: max-content; font-size: 20vw; font-weight: 700; letter-spacing: -.075em; line-height: .82; text-align: center; }
+.world-hero .world-title { top: 45%; font-size: clamp(130px,19.4vw,330px); line-height: .88; letter-spacing: -.075em; }
+.focus-clear .world-hero .world-title { visibility: hidden; }
+.world-service .world-title { top: 49%; }
+.world-film img,.world-coast img { width: 100%; height: 100%; object-fit: cover; }
+.world-film img { object-position: 50% 38%; }
+.world-film-shade { position: absolute; inset: 0; background: linear-gradient(90deg,#04081385,#04081340),linear-gradient(0deg,#03070bd9,transparent 65%); }
+.world-coast { background: #eaf2ed; }
+.world-coast img { object-position: center; }
+.world-process { background: #e9e6df; color: #121310; }
+.process-photo { position: absolute; }
+.process-photo img { object-fit: cover; }
+.process-photo-one { left: 17%; top: 7%; width: 22%; height: 42%; }
+.process-photo-one img { object-position: 50% 29%; }
+.process-photo-two { right: 12%; bottom: 9%; width: 34%; height: 35%; }
+.process-photo-two img { object-fit: contain; background: #d9d6d0; padding: 6%; }
+.process-photo p { position: absolute; top: calc(100% + 13px); left: 0; font-size: 17px; font-weight: 600; letter-spacing: -.04em; }
+.process-photo p span { display: block; margin-top: 6px; font-size: 11px; font-weight: 400; letter-spacing: 0; }
+.world-contact .world-title { font-size: 15vw; line-height: .95; top: 58%; }
+.lens-label { position: absolute; transform: translate(-50%,-50%); white-space: pre-line; text-align: center; font-weight: 700; line-height: .92; letter-spacing: -.06em; width: max-content; }
+.is-light .lens-label { color: #111c18; }
+.focus-fallback,.focus-canvas { position: absolute; inset: 0; z-index: 2; }
+.focus-fallback { --crystal-art: url('/media/loomy-crystal.webp'); transition: opacity .2s; }
+.has-webgl .focus-fallback { opacity: 0; }
+.focus-fallback > div { position: absolute; border-radius: 50%; background-image: var(--crystal-art); background-repeat: no-repeat; background-size: 504.587% 200.877%; background-position: 29.932% 63.478%; mask-image: radial-gradient(ellipse closest-side,transparent calc(var(--aperture,.758) * 100% - .5px),#000 calc(var(--aperture,.758) * 100% + .5px)); }
+.focus-fallback > div:nth-child(2) { background-size: 555.556% 204.464%; background-position: 52.275% 62.821%; }
+.focus-fallback > div::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(110deg,transparent 32%,#d9faff80 48%,transparent 64%); background-size: 300% 100%; opacity: .6; }
+@media (prefers-reduced-motion:no-preference) { .focus-fallback > div::after { animation: crystal-letter-reflection 8s linear infinite; } }
+.has-webgl .focus-fallback > div::after,.is-intro .focus-fallback > div::after { animation-play-state: paused; }
+@keyframes crystal-letter-reflection { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@media (max-width:767px) { .focus-fallback { --crystal-art: url('/media/loomy-crystal-mobile.webp'); } }
+.focus-canvas canvas { display: block; width: 100%; height: 100%; }
+.focus-header { position: fixed; z-index: 4; top: 0; left: 0; width: 100%; height: 78px; padding: 22px 3.8%; display: flex; align-items: center; justify-content: space-between; gap: 35px; color: var(--focus-ink); }
+.focus-brand { display: block; width: 105px; flex-shrink: 0; }
+.focus-brand img { width: 100%; height: auto; max-height: 45px; object-fit: contain; }
+.is-light .focus-brand img { filter: brightness(.08); }
+.focus-header nav { display: flex; gap: 34px; align-items: center; }
+.focus-header nav a { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 0; font-size: 12px; line-height: 1.4; }
+.focus-header nav a:hover,.focus-header nav a[aria-current] { text-decoration: underline; text-underline-offset: 5px; }
+.focus-interface { position: fixed; z-index: 3; inset: 0; height: 100svh; pointer-events: none; overflow: hidden; }
+.focus-interface a,.focus-interface button,.focus-interface input,.focus-interface textarea,.focus-contact-panel { pointer-events: auto; }
+.focus-arrows { position: absolute; top: 103px; right: 3.8%; display: flex; gap: 12px; }
+.focus-arrows button { display: grid; place-items: center; width: 39px; height: 39px; border: 1px solid var(--focus-ink); border-radius: 50%; background: transparent; transition: background .2s,color .2s; }
+.focus-arrows button:disabled { opacity: .3; }
+.focus-arrows button:not(:disabled):hover { background: var(--focus-ink); color: #050505; }
+.focus-service-dots { position: absolute; top: 50%; right: 3.1%; display: flex; flex-direction: column; transform: translateY(-50%); }
+.focus-service-dots button { width: 32px; height: 32px; border: 0; padding: 0; background: transparent; display: grid; place-items: center; }
+.focus-service-dots button span { display: block; width: 5px; height: 5px; background: var(--focus-ink); border-radius: 50%; }
+.focus-service-dots button[aria-current] span { width: 9px; height: 9px; background: transparent; border: 1px solid var(--focus-ink); }
+.focus-caption { position: absolute; left: 3.8%; bottom: 7.2%; max-width: 400px; }
+.intro-caption { font-size: 19px; line-height: 1.25; letter-spacing: -.045em; }
+.intro-caption strong { font-weight: 600; }
+.caption-count { font-size: 11px; margin-bottom: 13px; color: var(--focus-muted); }
+.caption-title { font-size: 27px; font-weight: 500; line-height: 1.18; letter-spacing: -.045em; }
+.caption-description { font-size: 13px; line-height: 1.6; color: var(--focus-muted); margin-top: 8px; }
+.caption-disciplines { font-size: 11px; line-height: 1.6; margin-top: 10px; color: var(--focus-muted); }
+.focus-hero-cta { position: absolute; left: 38%; bottom: 7.1%; border: 1px solid var(--focus-ink); border-radius: 99px; padding: 10px 21px; font-size: 12px; line-height: 1.2; white-space: nowrap; }
+.focus-hero-cta::after { content: ""; position: absolute; left: calc(100% + 8px); top: 50%; width: 14vw; height: 1px; background: var(--focus-ink); }
+.focus-hero-cta:hover { background: var(--focus-ink); color: #050505; }
+.focus-outline { position: absolute; right: -3%; bottom: -10%; color: transparent; -webkit-text-stroke: 1px #dce3db; font-weight: 300; letter-spacing: -.08em; font-size: 27vw; line-height: 1; }
+.focus-text-button { display: inline-flex; align-items: center; gap: 24px; min-height: 36px; padding: 0; margin-top: 14px; border: 0; border-bottom: 1px solid var(--focus-line); background: transparent; font-size: 12px; }
+.focus-film-trigger { margin-top: 18px; }
+.focus-film-trigger .project-preview { display: inline-flex; width: fit-content; height: auto; min-height: 38px; aspect-ratio: auto; padding: 10px 17px; border: 1px solid #e5e8e0; border-radius: 99px; background: #090d1466; }
+.focus-film-trigger .project-poster,.focus-film-trigger .project-orbit { display: none; }
+.focus-film-trigger .play-button { position: static; transform: none; background: transparent; color: #f8f8f4; padding: 0; box-shadow: none; font-size: 12px; gap: 9px; }
+.focus-film-trigger .play-button svg { width: 15px; height: 15px; }
+.focus-experience .motion-toggle { z-index: 5; bottom: 22px; right: 3.6%; min-height: 34px; padding: 7px 11px; background: transparent; border-color: var(--focus-line); color: var(--focus-ink); font-size: 10px; gap: 7px; }
+.focus-experience .motion-toggle svg { width: 11px; height: 11px; }
+.focus-contact { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); width: min(820px,81%); }
+.focus-contact[hidden] { display: none; }
+.focus-contact-panel { padding: 34px clamp(26px,5vw,75px) 28px; border: 1px solid #71736c; border-radius: 24px; background: #262722c9; color: #f5f5f1; backdrop-filter: blur(14px); }
+.focus-contact-panel h2 { font-size: clamp(30px,4vw,53px); letter-spacing: -.06em; line-height: 1.05; text-align: center; font-weight: 600; }
+.contact-intro { font-size: 12px; text-align: center; margin-top: 10px; color: #d3d5cb; }
+.focus-contact-panel form,.brief-ready { width: min(440px,100%); margin: 28px auto 0; }
+.focus-contact-panel fieldset { border: 0; padding: 0; margin: 0 0 19px; min-width: 0; }
+.focus-contact-panel legend,.focus-contact-panel label { display: block; font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+.brief-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.brief-options button { min-height: 35px; padding: 7px 16px; border-radius: 99px; border: 1px solid #7a7d72; background: transparent; font-size: 12px; }
+.brief-options button[aria-pressed=true] { background: #eeeee8; color: #0d0e0b; border-color: #eeeee8; }
+.focus-contact-panel textarea { display: block; width: 100%; resize: vertical; min-height: 66px; max-height: 130px; border: 1px solid #7b7d75; border-radius: 10px; padding: 12px; background: #13150f85; color: #fff; font-family: var(--font-body); font-size: 13px; line-height: 1.5; }
+.focus-contact-panel textarea::placeholder { color: #c7c9bd; opacity: 1; }
+.focus-submit { display: flex; align-items: center; justify-content: space-between; gap: 25px; width: 100%; min-height: 43px; margin-top: 17px; padding: 10px 17px; border: 1px solid #f1f2e9; border-radius: 99px; background: #f1f2e9; color: #11130c; font-size: 12px; }
+.brief-note { color: #c2c6b7; font-size: 10px; line-height: 1.5; margin-top: 12px; }
+.brief-ready > p { display: flex; align-items: center; gap: 7px; font-size: 12px; line-height: 1.5; margin-bottom: 18px; color: #e2ebd2; }
+.brief-edit { display: block; min-height: 35px; margin: 8px auto 0; padding: 8px; font-size: 11px; background: transparent; border: 0; text-decoration: underline; text-underline-offset: 3px; }
+.focus-contact > .contact-handle { display: block; text-align: center; font-size: 11px; margin-top: 18px; color: #e3e5db; }
+.focus-experience .motion-dialog { pointer-events: auto; color: #f3f5e9; }
+.focus-experience .motion-dialog .dialog-close { color: #f3f5e9; }
+.focus-experience .motion-dialog p { color: #c5cabb; }
+.focus-experience .motion-dialog p a { color: #d6fa00; }
+.focus-experience a:focus-visible,.focus-experience button:focus-visible,.focus-experience textarea:focus-visible { outline: 2px solid #d6fa00; outline-offset: 4px; }
+@media (prefers-reduced-motion:no-preference) { .focus-caption { animation: focus-caption-in .5s both; } }
+@keyframes focus-caption-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+@media (max-width:767px) {
+  .focus-header { height: 65px; padding: 14px 5%; gap: 20px; }
+  .focus-brand { width: 80px; }
+  .focus-header nav { gap: clamp(12px,4vw,23px); }
+  .focus-header nav a { font-size: 10px; min-height: 34px; }
+  .focus-soft { filter: blur(5px); }
+  .world-hero .world-title { top: 44%; font-size: clamp(106px,31vw,210px); line-height: .9; }
+  .world-service .world-title { top: 45%; font-size: 27vw; }
+  .world-film img { object-position: 50% 34%; }
+  .world-coast img { object-position: 62% center; }
+  .focus-arrows { top: 85px; right: 5%; gap: 9px; }
+  .focus-arrows button { width: 35px; height: 35px; }
+  .focus-service-dots { top: 64%; right: 3.4%; }
+  .focus-service-dots button { width: 32px; height: 30px; }
+  .focus-caption { left: 5%; bottom: 13%; max-width: 80%; }
+  .intro-caption { font-size: 15px; }
+  .caption-title { font-size: 24px; }
+  .caption-count { margin-bottom: 10px; font-size: 10px; }
+  .caption-description { font-size: 12px; line-height: 1.5; }
+  .caption-disciplines { max-width: 245px; font-size: 10px; line-height: 1.7; }
+  .focus-hero-cta { left: 5%; bottom: 5%; font-size: 11px; padding: 10px 17px; }
+  .focus-hero-cta::after { width: 15vw; }
+  .focus-outline { font-size: 44vw; right: -4%; bottom: -2%; }
+  .focus-experience .motion-toggle { bottom: 4.6%; right: 5%; min-height: 34px; width: 34px; padding: 9px; }
+  .focus-experience .motion-toggle > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .focus-experience .motion-toggle svg { flex-shrink: 0; width: 13px; height: 13px; }
+  .process-photo-one { left: 8%; top: 15%; width: 38%; height: 30%; }
+  .process-photo-two { right: 7%; bottom: 21%; width: 44%; height: 26%; }
+  .process-photo p { font-size: 14px; top: calc(100% + 10px); }
+  .process-photo p span { font-size: 9px; line-height: 1.5; max-width: 150px; }
+  .focus-contact { top: 27%; width: 91%; }
+  .focus-contact-panel { padding: 26px 20px 20px; border-radius: 20px; backdrop-filter: none; background: #242620e8; }
+  .focus-contact-panel h2 { font-size: 31px; }
+  .contact-intro { font-size: 11px; margin-top: 8px; }
+  .focus-contact-panel form,.brief-ready { margin-top: 23px; }
+  .focus-contact-panel fieldset { margin-bottom: 16px; }
+  .focus-contact-panel textarea { font-size: 16px; padding: 9px 10px; min-height: 65px; }
+  .focus-contact > .contact-handle { font-size: 10px; margin-top: 14px; }
+  .brief-options { gap: 6px; }
+  .brief-options button { padding: 7px 13px; font-size: 11px; }
+}
+@media (max-height:700px) and (max-width:767px) {
+  .focus-contact { top: 24%; }
+  .focus-contact-panel { padding-block: 19px 16px; }
+  .focus-contact-panel h2 { font-size: 27px; }
+  .focus-contact-panel form,.brief-ready { margin-top: 16px; }
+  .focus-contact-panel fieldset { margin-bottom: 12px; }
+  .focus-contact-panel textarea { min-height: 53px; }
+  .focus-submit { margin-top: 13px; min-height: 39px; }
+  .brief-note { font-size: 9px; margin-top: 9px; }
+  .focus-contact > .contact-handle { margin-top: 10px; }
+}
+@media (max-height:500px) and (orientation:landscape) {
+  .focus-contact { top: 22%; width: min(760px,85%); }
+  .focus-contact-panel { padding: 18px 25px; }
+  .focus-contact-panel h2 { font-size: 26px; }
+  .focus-contact-panel form,.brief-ready { margin-top: 13px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 25px; }
+  .focus-contact-panel fieldset { grid-column: 1; grid-row: 1 / 3; }
+  .focus-contact-panel label { grid-column: 2; }
+  .focus-contact-panel textarea { grid-column: 2; min-height: 52px; }
+  .focus-submit { margin-top: 8px; grid-column: 1; }
+  .brief-note { grid-column: 2; align-self: center; }
+}
