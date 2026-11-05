@@ -1,67 +1,55 @@
-# Loomy Comunicativa
+# Loomy em foco
 
-Website vitrine da Loomy, agência alagoana de produção, design e marketing.
+Vitrine interativa da Loomy, agência alagoana de produção, design e marketing. Replica a estrutura e a sequência observáveis da referência [Grau](https://profitize.com.br/build/landing-pages/grau), usando os dois O da marca como lentes em uma cena contínua.
 
-[Ver prévia do topo Campo](docs/preview-campo.png). [Direção, referência e procedência da cena](docs/design-campo.md).
+A experiência tem oito capítulos de tela inteira: apresentação, produção, design, marketing, aproximação do processo criativo, novos horizontes, processo e contato. A rolagem, o toque, as setas, os indicadores e o teclado percorrem o mesmo palco. A nitidez acompanha as aberturas das letras em perspectiva.
+
+[Prévia desktop](docs/preview-focus-desktop.png) · [Prévia mobile](docs/preview-focus-mobile.png) · [Vídeo desktop](docs/preview-focus-desktop.webm) · [Vídeo mobile](docs/preview-focus-mobile.webm).
+
+[Direção, referência e procedência](docs/design-grau.md). Resultados reais em [VALIDATION.md](docs/VALIDATION.md).
 
 ## Rodar localmente
 
-Requisitos: Node.js 22+ e npm. Não exige `.env`, banco ou contas externas.
+Node.js 22+ e npm. Sem banco, credenciais ou `.env`.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Abra http://127.0.0.1:3000. Para reproduzir a versão de produção:
+Abra http://127.0.0.1:3000. Para produção local:
 
 ```sh
 npm run build
-npm start
+npm run start -- --port 3100
 ```
 
-## Verificações
+## Validar
 
 ```sh
 npm run lint
 npm run typecheck
 npm run build
-npx playwright install chromium
+npx playwright install chromium webkit
 npm test
 ```
 
-O Playwright inicia e encerra seu próprio servidor de produção na porta 3100, sem reutilizar o servidor de desenvolvimento. Os testes cobrem desktop e celular, navegação, menu/teclado, serviços expansíveis, vídeo completo com áudio, links de contato, overflow, axe WCAG AA, pausa de efeitos e reduced motion. A marca 3D é validada por controles, teclado e arraste, incluindo toque no mobile e fallback sem WebGL. As verificações rodam em um worker para evitar competição de WebGL no Chromium headless. Capturas e traces ficam em `test-results/`.
+O Playwright inicia sua própria produção na porta 3100, com um worker para isolar WebGL headless. Não reutiliza o dev server. Verifica rolagem por mouse e toque real, navegação, teclado, links diretos, foco seletivo, fallback, pausa, acessibilidade WCAG 2.0/2.1 A/AA e 2.2 AA, overflow, vídeo e briefing local. O workflow Quality executa os checks em PRs; resultado local não afirma CI remota.
 
-O workflow `.github/workflows/quality.yml` executa essas verificações em PRs. As execuções remotas precisam ser confirmadas no GitHub; resultado local não significa CI remota aprovada.
+## Estrutura e comportamento
 
-## Estrutura
+- `src/components/focus`: mundos visuais, letras 3D, máscaras projetadas, sequência de rolagem e briefing.
+- `src/app/focus-base.css`: base da experiência atual; os estilos da versão anterior não são carregados.
+- `src/content/site.ts`: conteúdo comercial e canais fornecidos.
+- `src/components/motion-player.tsx`: vídeo enviado pelo proprietário, completo, com áudio original e diálogo acessível.
+- `public/media`: arte original, vídeo e fotografia de litoral gerada, com procedência documentada.
 
-- `src/app`: homepage, layout, metadados, página 404 e tokens/estilos responsivos.
-- `src/components`: navegação, identidade, serviços, player, hero Campo, cena 3D e motion isolado.
-- `src/content/site.ts`: canais, navegação, serviços e catálogo tipado de projetos.
-- `public/media`: logo cristal, cena de campo, contornos 3D, vídeo completo e poster, com procedência documentada.
-- `public/fonts`: Space Grotesk auto-hospedada e licença OFL.
-- `tests`: verificações de fluxo e acessibilidade em navegador real.
-- `PLAN.md` e `STATUS.md`: decisões e checkpoint concisos.
+Desktop e mobile carregam a mesma cena 3D. A escala e o enquadramento respondem à proporção da tela. A versão CSS mantém os O e as lentes quando WebGL não está disponível. A rolagem é nativa, com scroll snap e progressão suavizada por GSAP. Reduced motion e pausa global mantêm a navegação funcional e interrompem o movimento automático. Não há valores por frame em estado React.
 
-## Conteúdo e identidade
+O briefing é preparado no navegador. O botão tenta copiá-lo e oferece o Instagram informado pelo proprietário. Quando a área de transferência não está disponível, o texto continua selecionável. Não há envio simulado nem backend. Nenhum contato, cliente, resultado ou prazo comercial foi inventado.
 
-A direção combina fundo escuro, verde-limão e o cristal azulado da arte enviada pelo proprietário no header e no footer. A pedido do proprietário, o hero segue a composição do [Campo](https://profitize.com.br/build/componentes/campo): paisagem ao entardecer, nome metálico no horizonte, pessoa à frente e navegação na base. A fotografia de ambientação é original, gerada por IA; não representa a equipe ou um escritório real da Loomy.
+## Revisão e Git
 
-O nome Loomy no hero é geometria Three.js derivada de Space Grotesk Bold, com volume, bevel e material cromado animado. O nome em CSS permanece visível antes da ativação e quando WebGL não está disponível. A implementação anterior de cristal continua disponível como variante do componente, e a arte original é mantida na navegação e no rodapé.
+Branch desta entrega: `design/grau-loomy`, baseada em `7952d4e` da `design/topo-campo`. A fundação ainda não foi integrada à main; considerar esse encadeamento antes de uma PR. A versão Campo e a implementação cristal permanecem no histórico e em seus componentes antigos.
 
-Arraste o nome ou use as setas do teclado; Home e o botão de restaurar retornam à posição frontal. No desktop, o 3D carrega depois da primeira cena; no celular e com movimento reduzido, use **Explorar 3D**. O render limita resolução/fps, para fora da tela ou em aba oculta e libera recursos ao desmontar.
-
-Névoa, reflexos cromados, parallax, uma faixa tipográfica e detalhes dos serviços compõem o motion. As animações contínuas param fora da tela. **Pausar efeitos** interrompe animações e motion automático; interações manuais continuam disponíveis. `prefers-reduced-motion` é respeitado. GSAP/ScrollTrigger continua sob demanda no desktop; mobile usa CSS scroll-driven quando suportado, com fallback estático. O scroll permanece nativo e gestos verticais no canvas permitem navegar pela página.
-
-O player agora usa o novo vídeo enviado pelo proprietário: 20,87s, 720×1280, completo, sem crop e com áudio original. As legendas são as incorporadas à imagem do próprio vídeo; não foi criada uma nova transcrição. A versão anterior filmada do monitor deixou de ser exibida. Consulte `public/media/README.md`.
-
-Os textos são propostas editoriais. Serviços específicos, textos, direitos dos assets e contato devem ser aprovados pelo proprietário antes de publicação. Não há clientes, depoimentos, resultados ou WhatsApp inventados. Instagram é o canal informado no briefing. Não há formulário que simule envio.
-
-Para inserir cases reais, adicione apenas itens aprovados em `projects` e seus assets locais. Substitua `.about-visual` por fotografia autorizada quando disponível. Os tamanhos e as áreas visuais já estão reservados.
-
-## Deploy e revisão
-
-Projeto compatível com a integração Next.js da Vercel, usando `npm run build`, sem configuração adicional. Nenhum serviço foi criado nem houve publicação. Os metadados da versão de revisão estão com `noindex`: habilite indexação, domínio canônico e OG definitivo somente após aprovação.
-
-Branch desta alteração: `design/topo-campo`, baseada em `feat/loomy-site-foundation` (`fc0041e`). A `main` contém somente o bootstrap. A integração desta mudança deve considerar a branch de fundação como base enquanto ela não for integrada. Não fazer merge ou publicar em produção sem aprovação do proprietário. Não foi aplicada proteção de branch.
+Sem merge ou deploy de produção. `noindex` permanece ativo para revisão. Domínio canônico e OG final dependem da publicação aprovada. A fotografia de litoral é uma ambientação gerada por IA e não representa um cliente ou produção real. Textos comerciais continuam sujeitos à aprovação do proprietário.

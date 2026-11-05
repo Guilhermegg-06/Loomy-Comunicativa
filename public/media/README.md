@@ -1,5 +1,14 @@
 # Assets e procedência
 
+## Loomy em foco — 04/11/2026
+
+- `loomy-coast.webp`: litoral conceitual original gerado com ImageGen integrado, 1536×1024, 107.422 bytes.
+- `loomy-coast-mobile.webp`: versão responsiva 960×640, 38.150 bytes.
+- A foto serve à demonstração de foco e não representa um cliente ou trabalho real da agência.
+- As duas letras O são geometria nativa Three.js, sem textura fotográfica de óculos e sem assets do pacote comercial da referência.
+- Materiais enviados pelo proprietário (arte cristal e vídeo completo) continuam sendo usados na nova experiência.
+- Referência pública, decisões, prompt e caminho do original: [design-grau.md](../../docs/design-grau.md).
+
 Atualizados em 25/10/2026 a pedido do proprietário.
 
 ## Cristal

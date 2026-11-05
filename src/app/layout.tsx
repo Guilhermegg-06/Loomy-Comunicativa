@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "./focus-base.css";
 
 const spaceGrotesk = localFont({
   src: "../../public/fonts/space-grotesk-latin.woff2",
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   applicationName: "Loomy",
   robots: { index: false, follow: false },
   openGraph: {
-    title: "Loomy | Ideias em movimento",
+    title: "Loomy | Ideias em foco",
     description: "Produção, design e marketing com personalidade. De Alagoas para novas conexões.",
     locale: "pt_BR",
     type: "website",
   },
 };
 
-export const viewport: Viewport = { themeColor: "#111211", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#050505", colorScheme: "dark" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="pt-BR"><body className={spaceGrotesk.variable}>{children}</body></html>;

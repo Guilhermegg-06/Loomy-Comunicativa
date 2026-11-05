@@ -1,4 +1,35 @@
-# Validação do topo Campo — 04/11/2026
+# Validação: Loomy em foco — 04/11/2026
+
+Branch `design/grau-loomy`, base `7952d4e`. Produção local Next.js 16.4.3. História verificada: chegada à vitrine → rolagem pelos capítulos → foco projetado nos O → vídeo de apresentação → briefing local → link para o Instagram informado.
+
+| Verificação | Evidência |
+| --- | --- |
+| Build | Produção compilada, TypeScript aprovado e página pré-renderizada |
+| Lint e tipos | `npm run lint` e `npm run typecheck` aprovados |
+| Chromium desktop/mobile | 13 testes aprovados e 1 dispensado (fallback compartilhado) |
+| WebKit mobile | 2 testes aprovados; capturas mostram WebGL e máscara nítida sobre os mundos desfocados |
+| Gesto e sequência | Wheel real e deslize com eventos de toque percorrem uma tela; setas, indicadores, teclado e links diretos confirmados |
+| Nitidez | Máscaras projetadas se movem com as aberturas, incluindo o zoom e a cena clara; capturas comparadas à prévia pública |
+| Acessibilidade | Axe WCAG 2.0/2.1 A/AA e 2.2 AA sem violações nos capítulos 0, 1, 4, 5, 6 e 7 em Chromium e no contato WebKit |
+| Responsividade | Sem overflow horizontal entre 320 e 1440px; layouts de retrato desktop e mobile inspecionados |
+| Preferências | Pausa congela o movimento automático e continua permitindo navegação; reduced motion e fallback sem WebGL verificados |
+| Vídeo | Arquivo completo 720×1280, duração 20–22s, áudio não silenciado, reprodução, Escape, pausa e retorno de foco aprovados |
+| Briefing | Preparação local, permissão de clipboard simulada, alternativa manual e edição preservando o texto; Instagram correto |
+| Console | Sem erros de página nos fluxos de navegação testados em Chromium e WebKit |
+
+A inspeção encontrou um atraso de atualização após pausa/resize causado por épocas diferentes entre o ticker e callbacks. O renderer agora usa `performance.now` em todos os caminhos. Links funcionam também durante a carga do módulo. A rodada final completa, com shader analítico e compilação assíncrona, aprovou 15 testes em Chromium e WebKit, com 1 dispensado. Não foram ampliados timeouts para esconder esse erro.
+
+Prévias e gravações da sequência ficam em `docs/preview-focus-*`. Direção, limitações de fidelidade e prompt da foto original estão em [design-grau.md](design-grau.md). O vídeo de navegação usa a aplicação real, sem edição para simular transições. Os testes foram em navegadores locais/emulados, não em aparelhos físicos. A CI foi atualizada para instalar Chromium e WebKit; não há afirmação de execução remota aprovada.
+
+## Lighthouse da experiência final
+
+Medição mobile simulada com 3D automático ativo: performance **75**, acessibilidade **100**, boas práticas **100**, SEO **63**. FCP e LCP **1,0s**, CLS **0,023**, TBT **1.270ms**. Sem erros de console. O `noindex` explica a limitação intencional de SEO nesta revisão.
+
+A primeira leitura teve TBT de 9.840ms com a geração de ambiente e material físico. O shader analítico reduziu para 2.160ms; sua compilação assíncrona chegou a 1.270ms. A navegação permanece funcional durante a preparação do 3D. LCP e CLS estão dentro das metas locais; o bloqueio de main thread ainda pede otimização e medição em aparelhos físicos. Não foi medido INP real. Os números descrevem laboratório local com CPU mobile simulada, não métricas de usuários.
+
+Relatórios brutos ignorados pelo Git: `.tools/lighthouse-focus.json`, `.tools/lighthouse-focus-final.json` e `.tools/lighthouse-focus-async.json`. Prévias finais: [desktop](preview-focus-desktop.png), [mobile](preview-focus-mobile.png), [vídeo desktop](preview-focus-desktop.webm), [vídeo mobile](preview-focus-mobile.webm).
+
+## Histórico: topo Campo — 04/11/2026
 
 Branch `design/topo-campo`, baseada em `fc0041e` da fundação. Produção local Next.js 16.4.3, Chromium Playwright.
 
