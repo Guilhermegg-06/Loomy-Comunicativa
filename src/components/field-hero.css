@@ -1,0 +1,63 @@
+/* Campo composition: the scenic hero is a framed photograph, with the chrome
+   name between the landscape and foreground. Editorial sections below stay sharp. */
+.hero.field-hero { width: min(1600px,calc(100% - 40px)); height: calc(100svh - 112px); min-height: 650px; max-height: 1000px; margin: 16px auto 0; border: 1px solid #39323b; border-radius: 24px; isolation: isolate; overflow: hidden; background: #090b13; color: #f5f3f4; container-type: size; }
+.field-hero > h1 { width: 1px; font-size: 1px; }
+.field-scene,.field-foreground { position: absolute; inset: 0; pointer-events: none; }
+.field-scene { z-index: 0; }
+.field-hero .field-photo { object-fit: cover; object-position: center; width: max(110cqw,190cqh) !important; height: max(73.333cqw,126.667cqh) !important; max-width: none; left: 50% !important; right: auto !important; top: calc(50% - max(44.37cqw,76.64cqh)) !important; bottom: auto !important; transform: translateX(-50%); }
+.field-hero .field-wordmark { position: absolute; inset: auto; top: 25%; left: 50%; width: 48%; height: 34%; transform: translateX(-50%); z-index: 2; }
+.field-wordmark .hero-pointer { position: absolute; inset: 0; }
+.field-wordmark .crystal-canvas canvas { border-radius: 0; }
+.field-wordmark .crystal-canvas canvas:focus-visible { outline-offset: 5px; outline-color: #eee9e4; }
+.field-hero .crystal-fallback { inset: 0; width: 100%; height: 100%; transform: none; display: grid; place-items: center; animation: none; pointer-events: none; }
+.field-chrome { display: block; font-family: var(--font-body); font-size: clamp(115px,14.7vw,240px); font-weight: 700; line-height: 1.12; letter-spacing: -.045em; padding-bottom: .1em; color: #ebe8ee; background: linear-gradient(164deg,#fff 5%,#c6c6d5 28%,#f9f5fa 43%,#323b5a 47%,#070d24 49%,#437ee8 50%,#f9c592 52%,#faf6fb 54%,#d9d6df 70%,#86889d 90%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 1px #f1e8ef99) drop-shadow(0 8px 6px #08091755); }
+.field-foreground { z-index: 3; mask-image: radial-gradient(ellipse 1.9% 4.7% at 50% 52%,#000 72%,transparent 100%),linear-gradient(to bottom,transparent 49.5%,#000 59.5%); }
+.field-mist { position: absolute; z-index: 3; top: 43%; left: -20%; width: 140%; height: 18%; pointer-events: none; background: radial-gradient(ellipse at center,rgba(215,186,207,.2),rgba(184,173,202,.05) 45%,transparent 73%); filter: blur(12px); }
+.field-shade { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: linear-gradient(to bottom,#0406128a 0%,transparent 30%,transparent 61%,#05060888 81%,#07080be8 100%); }
+.field-info { position: absolute; z-index: 5; bottom: 10%; left: 4.8%; right: 4.8%; display: flex; align-items: flex-start; justify-content: space-between; gap: 45px; }
+.field-brand > p { font-size: clamp(24px,2.2vw,33px); line-height: 1.1; font-weight: 500; letter-spacing: -.055em; margin-bottom: 14px; }
+.field-brand > span { display: block; font-size: 12px; color: #dfd9df; line-height: 1.7; }
+.field-columns { display: flex; gap: clamp(30px,4.2vw,75px); }
+.field-columns nav { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.field-columns h2 { font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1.3; letter-spacing: 0; color: #fbf8fa; margin-bottom: 5px; }
+.field-columns a { display: inline-flex; align-items: center; min-height: 24px; font-size: 11px; line-height: 1.5; color: #e1dbe3; transition: color .2s; }
+.field-columns a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+.field-copyright { position: absolute; z-index: 5; left: 0; right: 0; bottom: 3.7%; font-size: 10px; line-height: 1.4; text-align: center; color: #d0cbd1; }
+.field-hero .crystal-tools { top: -15%; bottom: auto; z-index: 6; }
+.field-hero .crystal-tools button { background: #0d101ba6; border-color: #e6dce14d; color: #f5f0f5; font-size: 10px; }
+.field-hero .crystal-tools button:hover { border-color: #eee8ee; }
+.field-hero .crystal-hint { color: #eee6ed; }
+@media (hover:hover) and (pointer:fine) {
+  .field-hero .crystal-logo.is-ready .crystal-tools { opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .field-wordmark:hover .crystal-tools,.field-wordmark:focus-within .crystal-tools { opacity: 1; pointer-events: auto; }
+  .field-hero .crystal-logo.is-ready:focus-within .crystal-tools,.field-hero .crystal-logo.is-ready:hover .crystal-tools,[data-motion="paused"] .field-hero .crystal-logo.is-ready .crystal-tools { opacity: 1; pointer-events: auto; }
+}
+@keyframes field-mist-drift { 0%,100% { transform: translateX(-3%) scaleY(.9); opacity: .65; } 50% { transform: translateX(3%) scaleY(1.1); opacity: 1; } }
+@media (prefers-reduced-motion:no-preference) {
+  .field-mist { animation: field-mist-drift 22s ease-in-out infinite; animation-play-state: paused; }
+  .field-hero.is-in-view .field-mist { animation-play-state: running; }
+}
+@media (max-width:1100px) and (min-width:768px) {
+  .hero.field-hero { min-height: 610px; }
+  .field-info { bottom: 11%; }
+  .field-columns { gap: 30px; }
+  .field-brand > span { font-size: 11px; }
+  .field-columns a { font-size: 10px; }
+}
+@media (max-width:767px) {
+  .hero.field-hero { width: calc(100% - 24px); height: calc(100svh - 96px); min-height: 680px; max-height: 980px; margin-top: 12px; border-radius: 20px; }
+  .field-hero .field-wordmark { width: 100%; height: 38%; top: 25%; }
+  .field-chrome { font-size: clamp(88px,23vw,178px); }
+  .field-foreground { mask-image: radial-gradient(ellipse 5% 4.7% at 50% 52%,#000 72%,transparent 100%),linear-gradient(to bottom,transparent 49.5%,#000 59.5%); }
+  .field-mist { top: 51%; height: 17%; filter: none; }
+  .field-info { bottom: 10%; left: 6%; right: 6%; flex-direction: column; gap: 27px; }
+  .field-brand > p { font-size: 27px; margin-bottom: 8px; }
+  .field-brand > span { font-size: 11px; }
+  .field-columns { width: 100%; justify-content: space-between; gap: 12px; }
+  .field-columns nav { gap: 4px; }
+  .field-columns h2 { font-size: 11px; }
+  .field-columns a { font-size: 10px; }
+  .field-copyright { bottom: 3%; font-size: 9px; }
+  .field-hero .crystal-tools { top: 0; bottom: auto; }
+  .field-hero .crystal-tools button { min-height: 36px; padding: 8px 12px; }
+}

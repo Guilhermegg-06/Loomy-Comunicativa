@@ -1,4 +1,35 @@
-# Validação da versão cristal
+# Validação do topo Campo — 04/11/2026
+
+Branch `design/topo-campo`, baseada em `fc0041e` da fundação. Produção local Next.js 16.4.3, Chromium Playwright.
+
+| Verificação | Resultado observado |
+| --- | --- |
+| Build | `npm run build` aprovado, com TypeScript e páginas estáticas |
+| Lint e tipos | Lint sem warnings; `npm run typecheck` aprovado |
+| Fluxos | 10 Playwright aprovados; 2 dispensados no mobile (cursor desktop e fallback compartilhado) |
+| Acessibilidade | Axe WCAG 2.0/2.1 A e AA e 2.2 AA sem violações detectadas em desktop e mobile |
+| Responsividade | Sem overflow horizontal em 320, 390, 767, 768, 1024 e 1440px |
+| Marca 3D | Botão, teclado, arraste por mouse e toque, restauração, pausa e reduced motion verificados |
+| Sem WebGL | Nome cromado em CSS preservado e H1 acessível |
+| Vídeo | Arquivo integral existente, 720×1280, 20,87s, reprodução e áudio não silenciado confirmados |
+| Navegação | Links, menu mobile, Escape, foco e serviços expansíveis verificados |
+| Console | Sem erros no fluxo principal testado |
+
+O servidor de testes passou para a porta 3100 e não reutiliza desenvolvimento. Um worker evita concorrência de renderização WebGL por software. A comparação de retorno à posição estável aguarda a conclusão da interpolação, com limite de 12s. Os contornos tipográficos foram preservados após a revisão visual; o relevo usa bevel para os reflexos nas bordas.
+
+Após o acabamento, os dois fluxos 3D passaram novamente. O Lighthouse apontou áreas de toque pequenas; os links da cena receberam altura mínima de 24px e a suíte Axe passou a incluir WCAG 2.2 AA. Os dois testes de acessibilidade/responsividade passaram novamente após essa correção. A névoa usa gradiente sem blur no mobile.
+
+Prévias: [desktop](preview-campo.png) e [celular](preview-campo-mobile.png). [Referência, decisões e prompt da cena original](design-campo.md). Não houve deploy; os resultados locais não afirmam aprovação de CI remota. O `noindex` continua intencional na versão de revisão.
+
+## Lighthouse do topo Campo
+
+Última medição mobile simulada: performance **76**, acessibilidade **100**, boas práticas **100**, SEO **63**. FCP **1,2s**, LCP **3,5s**, CLS **0**, TBT **550ms**. Sem erros de console. O relatório confirmou que os contornos/WebGL não carregaram automaticamente no mobile e que a imagem responsiva da cena transferiu cerca de 29KB.
+
+A auditoria inicial indicou acessibilidade 96 por áreas de toque pequenas. A correção elevou esse resultado a 100. A retirada do blur da névoa no mobile preserva a atmosfera, mas não alterou a nota de desempenho desta medição. LCP e TBT continuam acima das metas; otimizar custo de layout e execução de scripts e medir em preview antes de produção. Não foi medido INP de usuários reais. As notas são de laboratório local e não garantem desempenho em dispositivos reais.
+
+Relatórios brutos: `.tools/lighthouse-campo.json` e `.tools/lighthouse-campo-final.json` (ignorados pelo Git). As notas da versão cristal abaixo são históricas e não descrevem este topo.
+
+## Histórico: versão cristal — 25/10/2026
 
 Executada localmente em 25/10/2026, Node 22.20.0, Next.js 16.4.3, Chromium Playwright e build de produção.
 

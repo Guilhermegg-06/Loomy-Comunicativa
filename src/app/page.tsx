@@ -3,7 +3,7 @@ import { Navigation } from "@/components/navigation";
 import { Services } from "@/components/services";
 import { MotionPlayer } from "@/components/motion-player";
 import { MotionDirector } from "@/components/motion-director";
-import { CrystalLogo } from "@/components/crystal-logo";
+import { FieldHero } from "@/components/field-hero";
 import { MotionToggle } from "@/components/motion-toggle";
 import { ArrowRightIcon, ArrowUpRightIcon, AsteriskIcon, InstagramLogoIcon } from "@/components/icons";
 import { projects, site } from "@/content/site";
@@ -16,29 +16,7 @@ export default function Home() {
       <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
       <Navigation />
       <main id="conteudo">
-        <section id="inicio" className="hero" aria-labelledby="hero-title" data-motion-surface>
-          <div className="hero-light ambient-motion" aria-hidden="true" />
-          <div className="hero-layout shell">
-            <div className="hero-copy">
-              <p className="eyebrow">Criatividade que conecta.</p>
-              <h1 id="hero-title">Ideias fora<br />do <span>óbvio.</span><span className="title-asterisk" aria-hidden="true"><AsteriskIcon weight="bold" /></span></h1>
-              <p className="hero-description">Produção, design e marketing para marcas que têm algo a dizer.</p>
-              <a className="button button-lime" href="#projetos">Nosso universo <ArrowUpRightIcon size={22} aria-hidden /></a>
-            </div>
-            <div className="hero-art">
-              <div className="hero-grid" aria-hidden="true" />
-              <div className="hero-orbit hero-orbit-secondary" aria-hidden="true" />
-              <div className="hero-parallax">
-                <div className="hero-pointer">
-                  <div className="hero-orbit hero-orbit-main" aria-hidden="true" />
-                  <CrystalLogo />
-                  <span className="orbit-satellite ambient-motion" aria-hidden="true"><AsteriskIcon weight="bold" /></span>
-                  <div className="crystal-glints" aria-hidden="true">{Array.from({length:7},(_,index) => <i className="ambient-motion" key={index} />)}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <FieldHero />
 
         <div className="discipline-marquee" data-motion-surface aria-hidden="true">
           <div className="discipline-track ambient-motion">{[0,1,2,3].map((copy) => <div key={copy}>{["Produção","Design","Marketing"].map((word) => <span key={word}>{word}<AsteriskIcon weight="bold" /></span>)}</div>)}</div>

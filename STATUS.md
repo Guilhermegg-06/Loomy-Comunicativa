@@ -1,14 +1,13 @@
 # Checkpoint Loomy
 
-- Estado: S8, atualização cristal validada; abertura de PR segue pendente da permissão do conector.
-- Branch: `feat/loomy-site-foundation`.
-- Bootstrap: `63ae179`, publicado na main.
-- PR: não criada. Conector retornou 403; descrição pronta em `docs/PR_DRAFT.md`.
-- Última implementação: `0c28902`, nova logo cristal no topo/rodapé, hero com volume Three.js rotacionável, vídeo integral e motion ampliado com pausa global.
-- Validações: build, lint e tipos aprovados; Playwright 10 aprovados, 2 dispensados (fallback compartilhado e cursor no mobile). Mouse, toque e teclado verificados; Axe A/AA sem violações.
-- Lighthouse mobile atual: performance 86, acessibilidade 100, boas práticas 100, SEO 63 (`noindex` ativo); LCP 3,2s, CLS 0, TBT 320ms. WebGL não carregou automaticamente no mobile.
-- Prévia: `docs/preview-crystal.png`; decisões e resultados em `docs/VALIDATION.md`.
-- Pendências: aprovação visual/editorial, cases/fotos autorizados, meta de LCP inferior a 2,5s e validação em preview antes da produção.
-- GitHub: branch publicada e sincronizada. Conector recusou PR/Issue com 403. Alternativa de credencial local foi rejeitada automaticamente e não executada.
-- Próximo: habilitar escrita no conector ou abrir manualmente a Draft PR pelo link em `docs/PR_DRAFT.md`; revisar conteúdo/assets e desempenho antes da produção.
+- Estado: topo Campo implementado e validado em 04/11/2026.
+- Branch de design: `design/topo-campo`.
+- Base: `fc0041e` de `feat/loomy-site-foundation`. A main ainda contém somente o bootstrap; considerar a fundação como base de integração desta alteração.
+- Implementação: cena original de campo ao entardecer, nome Loomy cromado em 3D, pessoa em primeiro plano, névoa, parallax e navegação na base do hero. Header e footer mantêm a arte cristal; vídeo completo preservado.
+- Validações: build, lint e tipos aprovados; Playwright 10 aprovados, 2 dispensados no mobile. Marca por botão, mouse, toque e teclado; pausa global, reduced motion e fallback verificados. Axe A/AA sem violações detectadas.
+- Produção local de teste isolada na porta 3100, com um worker para WebGL headless. Lighthouse mobile: performance 76, acessibilidade 100, boas práticas 100, SEO 63; LCP 3,5s, CLS 0, TBT 550ms. Limites e histórico em `docs/VALIDATION.md`.
+- Prévias: `docs/preview-campo.png` e `docs/preview-campo-mobile.png`.
+- Direção, referência, assets e prompt: `docs/design-campo.md` e `public/media/README.md`.
+- Pendências de produção: otimizar LCP/TBT, aprovação visual/editorial, cases e fotografias autorizados, domínio canônico e OG final. `noindex` permanece ativo na revisão.
+- PR de fundação não criada anteriormente por 403 do conector; seu rascunho permanece em `docs/PR_DRAFT.md`. Não foi tentado contornar a autenticação.
 - Sem merge, deploy, alterações de credenciais ou proteção de branch aplicada.

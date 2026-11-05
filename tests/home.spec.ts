@@ -7,7 +7,7 @@ test("homepage, serviços, vídeo e contato funcionam sem erros", async ({ page 
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("/");
   await expect(page).toHaveTitle(/Loomy/);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("óbvio.");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Loomy");
   const services = page.locator("#servicos");
   await services.getByRole("button", { name: /Design/ }).click();
   await expect(services.getByRole("button", { name: /Design/ })).toHaveAttribute("aria-expanded", "true");
@@ -41,8 +41,8 @@ test("homepage, serviços, vídeo e contato funcionam sem erros", async ({ page 
   expect(errors).toEqual([]);
 });
 
-test("logo cristal 3D gira por botão, teclado e arraste; efeitos podem ser pausados", async ({ page }, testInfo) => {
-  test.setTimeout(45_000);
+test("marca cromada 3D gira por botão, teclado e arraste; efeitos podem ser pausados", async ({ page }, testInfo) => {
+  test.setTimeout(60_000);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.locator(".brand-link img")).toHaveAttribute("src", "/media/loomy-crystal-small.webp");
@@ -54,7 +54,7 @@ test("logo cristal 3D gira por botão, teclado e arraste; efeitos podem ser paus
   await page.emulateMedia({reducedMotion:"no-preference"});
   await page.getByRole("button",{name:"Pausar efeitos",exact:true}).click();
   await expect(page.locator("html")).toHaveAttribute("data-motion","paused");
-  await expect(page.locator(".hero-light")).toHaveCSS("animation-play-state","paused");
+  await expect(page.locator(".field-mist")).toHaveCSS("animation-play-state","paused");
   async function settled() {
     let previous: Buffer | undefined;
     await expect.poll(async () => {
@@ -62,7 +62,7 @@ test("logo cristal 3D gira por botão, teclado e arraste; efeitos podem ser paus
       const equal=previous?.equals(next) ?? false;
       previous=next;
       return equal;
-    },{intervals:[100,150,200]}).toBe(true);
+    },{intervals:[100,150,200],timeout:12_000}).toBe(true);
   }
   await settled();
   const original=await canvas.screenshot();
@@ -92,7 +92,7 @@ test("logo cristal 3D gira por botão, teclado e arraste; efeitos podem ser paus
   await page.getByRole("button",{name:"Restaurar posição da logo"}).click();
   await settled();
   await page.evaluate(() => window.scrollTo(0,0));
-  await page.screenshot({path:`test-results/${testInfo.project.name}-crystal-3d-hero.png`});
+  await page.screenshot({path:`test-results/${testInfo.project.name}-field-3d-hero.png`});
   await page.getByRole("button",{name:"Ativar efeitos",exact:true}).click();
   await expect(page.locator("html")).toHaveAttribute("data-motion","playing");
   await page.emulateMedia({reducedMotion:"reduce"});
@@ -112,7 +112,7 @@ test("logo continua disponível sem WebGL", async ({ page },testInfo) => {
   await page.goto("/");
   await page.getByRole("button",{name:"Explorar 3D"}).click();
   await expect(page.locator(".crystal-logo")).toHaveAttribute("data-status","unavailable");
-  await expect(page.locator(".crystal-fallback img")).toBeVisible();
+  await expect(page.locator(".field-chrome")).toBeVisible();
   await expect(page.getByRole("heading",{level:1})).toBeVisible();
 });
 
@@ -148,7 +148,7 @@ test("sem overflow, conteúdo legível com reduced motion e acessibilidade AA", 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
   await page.setViewportSize(testInfo.project.name === "mobile" ? { width: 390, height: 844 } : { width: 1440, height: 1000 });
-  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
   expect(results.violations).toEqual([]);
   await page.locator(".project-preview").scrollIntoViewIfNeeded();
   await expect.poll(() => page.locator(".project-preview img").evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);

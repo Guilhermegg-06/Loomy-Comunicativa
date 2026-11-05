@@ -1,8 +1,11 @@
 import {
   AmbientLight, DirectionalLight, ExtrudeGeometry, Group, HemisphereLight,
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, Path, PerspectiveCamera,
-  Scene, Shape, SRGBColorSpace, TextureLoader, WebGLRenderer,
+  Scene, Shape, SRGBColorSpace, TextureLoader, WebGLRenderer, PMREMGenerator,
+  ACESFilmicToneMapping,
 } from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import type { Texture, WebGLRenderTarget } from "three";
 
 type Outline = [number, number][];
 type Contours = { width: number; height: number; shapes: { outline: Outline; holes: Outline[] }[] };
@@ -13,7 +16,7 @@ export type CrystalController = {
   dispose: () => void;
 };
 
-export async function createCrystalScene(host: HTMLDivElement, motion: boolean): Promise<CrystalController> {
+export async function createCrystalScene(host: HTMLDivElement, motion: boolean, variant: "crystal"|"field"="crystal"): Promise<CrystalController> {
   const renderer = new WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, matchMedia("(pointer: coarse)").matches ? 1.25 : 1.5));
   renderer.setClearColor(0x000000, 0);
@@ -25,20 +28,22 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
   canvas.style.touchAction = "pan-y";
 
   let contours: Contours;
-  let texture;
+  let texture: Texture|null=null;
   try {
-    const response = await fetch("/media/loomy-crystal-contours.json");
+    const response = await fetch(variant==="field" ? "/media/loomy-field-contours.json" : "/media/loomy-crystal-contours.json");
     if (!response.ok) throw new Error("Contour unavailable");
     [contours, texture] = await Promise.all([
       response.json() as Promise<Contours>,
-      new TextureLoader().loadAsync("/media/loomy-crystal.webp"),
+      variant==="field" ? Promise.resolve(null) : new TextureLoader().loadAsync("/media/loomy-crystal.webp"),
     ]);
   } catch (error) {
     renderer.dispose();
     throw error;
   }
-  texture.colorSpace = SRGBColorSpace;
-  texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  if (texture) {
+    texture.colorSpace = SRGBColorSpace;
+    texture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
   const width = 8.3;
   const height = width * contours.height / contours.width;
   function trace(points: Outline, path: Shape | Path) {
@@ -55,21 +60,49 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
     shape.holes = item.holes.map((hole) => trace(hole,new Path()) as Path);
     return shape;
   });
-  const geometry = new ExtrudeGeometry(shapes, { depth: .38, bevelEnabled: true, bevelSize: .035, bevelThickness: .055, bevelSegments: 3, curveSegments: 4, steps: 1 });
+  const geometry = new ExtrudeGeometry(shapes, { depth: .38, bevelEnabled: true, bevelSize: variant==="field" ? .085 : .035, bevelThickness: variant==="field" ? .12 : .055, bevelSegments: variant==="field" ? 5 : 3, curveSegments: 4, steps: 1 });
   geometry.translate(0,0,-.19);
   const position = geometry.getAttribute("position");
   const uv = geometry.getAttribute("uv");
   for (let index=0;index<position.count;index++) {
     uv.setXY(index,position.getX(index)/width+.5,position.getY(index)/height+.5);
   }
-  const face = new MeshBasicMaterial({ map: texture, transparent: true, alphaTest: .1, toneMapped: false });
-  const edge = new MeshPhysicalMaterial({ color: 0xa2d8f2, metalness: .35, roughness: .2, clearcoat: 1, clearcoatRoughness: .12, iridescence: .5 });
+  const face = variant==="field"
+    ? new MeshPhysicalMaterial({color:0xf4f2ef,metalness:1,roughness:.13,clearcoat:1,iridescence:.3,envMapIntensity:1.7})
+    : new MeshBasicMaterial({ map: texture, transparent: true, alphaTest: .1, toneMapped: false });
+  const edge = new MeshPhysicalMaterial({ color: variant==="field" ? 0xd5d7e4 : 0xa2d8f2, metalness: variant==="field" ? 1 : .35, roughness: .2, clearcoat: 1, clearcoatRoughness: .12, iridescence: .5 });
   const mesh = new Mesh(geometry,[face,edge]);
   const object = new Group();
   object.add(mesh);
-  object.rotation.set(.08,-.12,-.06);
+  object.rotation.set(variant==="field" ? .01 : .08,variant==="field" ? -.045 : -.12,variant==="field" ? 0 : -.06);
   const scene = new Scene();
   scene.add(object, new AmbientLight(0xe9f6ff,2.2),new HemisphereLight(0xffffff,0x396e94,2.2));
+  let environment: WebGLRenderTarget|null=null;
+  const chromeTime={value:0};
+  if (variant==="field") {
+    renderer.toneMapping=ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.65;
+    const generator=new PMREMGenerator(renderer);
+    const room=new RoomEnvironment();
+    environment=generator.fromScene(room,.035);
+    scene.environment=environment.texture;
+    room.dispose();generator.dispose();
+    face.onBeforeCompile=(shader) => {
+      shader.uniforms.uChromeTime=chromeTime;
+      shader.vertexShader="varying vec3 vChromePosition;\n"+shader.vertexShader;
+      shader.vertexShader=shader.vertexShader.replace("#include <begin_vertex>","#include <begin_vertex>\nvChromePosition=position;");
+      shader.fragmentShader="uniform float uChromeTime;\nvarying vec3 vChromePosition;\n"+shader.fragmentShader;
+      shader.fragmentShader=shader.fragmentShader.replace("#include <color_fragment>",`#include <color_fragment>
+        float wave = sin(vChromePosition.y*1.65 + vChromePosition.x*.2 + uChromeTime*.09);
+        float bright = smoothstep(-.68,.52,wave);
+        vec3 silver = mix(vec3(.20,.23,.30),vec3(.98),bright);
+        float ribbon = exp(-pow((wave+.28)*12.,2.));
+        vec3 spectrum = mix(vec3(.13,.35,.95),vec3(1.,.25,.08),smoothstep(-.5,.8,vChromePosition.y));
+        diffuseColor.rgb *= mix(silver,spectrum,ribbon*.82);
+      `);
+    };
+    face.customProgramCacheKey=() => "loomy-field-chrome-1";
+  }
   const key = new DirectionalLight(0xffffff,4.5);
   key.position.set(3,5,8);
   const rim = new DirectionalLight(0x8bdafa,3);
@@ -87,8 +120,8 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
   let frame = 0;
   let previousTime = 0;
   let interactedAt = -10_000;
-  let yaw = -.12;
-  let pitch = .08;
+  let yaw = variant==="field" ? -.045 : -.12;
+  let pitch = variant==="field" ? .01 : .08;
   let pointer: { id: number; x: number; y: number; yaw: number; pitch: number; active: boolean; touch: boolean } | null = null;
   const fps = matchMedia("(pointer: coarse)").matches ? 30 : 45;
 
@@ -99,10 +132,11 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
     frame=0;
     if (disposed || !visible || document.hidden) return;
     if (now-previousTime < 1000/fps) { requestFrame(); return; }
+    if (auto) chromeTime.value+=Math.min((now-previousTime)/1000,.05);
     previousTime=now;
     const idle = auto && !pointer?.active && now-interactedAt>4000;
-    const targetX=pitch+(idle ? Math.sin(now*.0005)*.08 : 0);
-    const targetY=yaw+(idle ? Math.sin(now*.00032)*.2 : 0);
+    const targetX=pitch+(idle ? Math.sin(now*.0005)*(variant==="field" ? .025 : .08) : 0);
+    const targetY=yaw+(idle ? Math.sin(now*.00032)*(variant==="field" ? .06 : .2) : 0);
     object.rotation.x+=(targetX-object.rotation.x)*.16;
     object.rotation.y+=(targetY-object.rotation.y)*.16;
     object.position.y=idle ? Math.sin(now*.0007)*.065 : 0;
@@ -116,7 +150,9 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
     if (!bounds.width || !bounds.height) return;
     renderer.setSize(bounds.width,bounds.height,false);
     camera.aspect=bounds.width/bounds.height;
-    camera.position.z = camera.aspect < .9 ? 15.7/.9*1/camera.aspect : 15.7;
+    camera.position.z = variant==="field"
+      ? Math.max(height/(2*Math.tan(34*Math.PI/360)),width/(2*camera.aspect*Math.tan(34*Math.PI/360)))*1.16
+      : camera.aspect < .9 ? 15.7/.9*1/camera.aspect : 15.7;
     camera.updateProjectionMatrix();
     requestFrame();
   }
@@ -144,7 +180,7 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
     requestFrame();
   }
   function release() { pointer=null; canvas.classList.remove("is-dragging"); interactedAt=performance.now(); requestFrame(); }
-  function reset() { yaw=-.12;pitch=.08;interactedAt=performance.now();requestFrame(); }
+  function reset() { yaw=variant==="field" ? -.045 : -.12;pitch=variant==="field" ? .01 : .08;interactedAt=performance.now();requestFrame(); }
   function keyboard(event: KeyboardEvent) {
     if (!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home"].includes(event.key)) return;
     event.preventDefault();
@@ -183,7 +219,7 @@ export async function createCrystalScene(host: HTMLDivElement, motion: boolean):
       canvas.removeEventListener("pointerdown",down);canvas.removeEventListener("pointermove",move);
       canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",release);
       canvas.removeEventListener("keydown",keyboard);document.removeEventListener("visibilitychange",visibility);
-      geometry.dispose();face.dispose();edge.dispose();texture.dispose();renderer.dispose();canvas.remove();
+      geometry.dispose();face.dispose();edge.dispose();texture?.dispose();environment?.dispose();renderer.dispose();canvas.remove();
     },
   };
 }

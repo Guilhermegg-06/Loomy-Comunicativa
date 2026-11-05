@@ -5,7 +5,7 @@ import { ArrowClockwiseIcon, ArrowCounterClockwiseIcon, CubeIcon } from "@phosph
 import { Brand } from "./brand";
 import type { CrystalController } from "./crystal-scene";
 
-export function CrystalLogo() {
+export function CrystalLogo({variant="crystal"}: {variant?: "crystal"|"field"}) {
   const host=useRef<HTMLDivElement>(null);
   const controller=useRef<CrystalController | null>(null);
   const launcher=useRef<(() => void) | null>(null);
@@ -24,7 +24,7 @@ export function CrystalLogo() {
       try {
         const {createCrystalScene}=await import("./crystal-scene");
         if (disposed || !host.current) return;
-        const scene=await createCrystalScene(host.current,enabled());
+        const scene=await createCrystalScene(host.current,enabled(),variant);
         if (disposed) { scene.dispose();return; }
         controller.current=scene;
         scene.setMotion(enabled());
@@ -50,11 +50,11 @@ export function CrystalLogo() {
       preference.removeEventListener("change",sync);window.removeEventListener("loomy:motionchange",sync);
       controller.current?.dispose();controller.current=null;launcher.current=null;
     };
-  },[]);
+  },[variant]);
 
   return (
-    <div className={`crystal-logo ${status==="ready" ? "is-ready" : ""}`} data-status={status}>
-      <div className="crystal-fallback ambient-motion" aria-hidden={status==="ready"}><Brand priority className="hero-brand" /></div>
+    <div className={`crystal-logo ${variant==="field" ? "is-field" : ""} ${status==="ready" ? "is-ready" : ""}`} data-status={status}>
+      <div className="crystal-fallback ambient-motion" aria-hidden={variant==="field" || status==="ready"}>{variant==="field" ? <span className="field-chrome">Loomy</span> : <Brand priority className="hero-brand" />}</div>
       <div className="crystal-canvas" ref={host} />
       <div className="crystal-tools">
         {status!=="ready" ? <button type="button" onClick={() => {manual.current=true;launcher.current?.();}} disabled={status==="loading" || status==="unavailable"}><CubeIcon size={16} aria-hidden />{status==="loading" ? "Preparando 3D" : status==="unavailable" ? "Logo em imagem" : "Explorar 3D"}</button> : <>

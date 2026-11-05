@@ -23,3 +23,13 @@ A face da cena 3D usa a arte enviada, com volume/laterais gerados por código e 
 Os assets anteriores `loomy-reference-*`, `loomy-wordmark-*` e `loomy-motion*` foram preservados como histórico local/versionado e não são mais usados pela homepage. A filmagem de monitor anterior não é exibida.
 
 Não foram adicionados clientes, depoimentos, nomes de equipe ou resultados comerciais.
+
+## Campo — 04/11/2026
+
+- `loomy-field.webp`: cena original gerada com ImageGen integrado, 1536×1024, WebP 73.158 bytes. Campo ao entardecer, pessoa anônima vista de costas e mesa com laptop. É ambientação conceitual, não fotografia documental da Loomy.
+- `loomy-field-mobile.webp`: variante 1024×683, WebP 28.618 bytes.
+- `loomy-field-contours.json`: cinco letras de “Loomy”, contornos de Space Grotesk Bold em grade de 720×222, usados para geometria extrudada. A fonte e sua licença OFL estão em `public/fonts`.
+- A referência visual é o componente [Campo da Profitize](https://profitize.com.br/build/componentes/campo), consultado por sua página pública e pela captura enviada pelo proprietário. As fotografias da referência não são distribuídas neste projeto; código, cena e tipografia foram implementados localmente.
+- A marca cromada e seus reflexos são renderizados por código, sem texto ou marca embutidos na fotografia.
+
+Prompt integral, caminho do original gerado e decisões: [design-campo.md](../../docs/design-campo.md).
