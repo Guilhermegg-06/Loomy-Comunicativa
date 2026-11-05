@@ -67,7 +67,7 @@ export function initializeFocus(root:HTMLDivElement,scroller:HTMLElement,onActiv
     projections.forEach((lens,index)=>{
       clips[index].setAttribute("points",lens.points);
       labels[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;font-size:${Math.min(lens.width/(labelMode==="hero" ? 4.1 : labelMode==="film" ? 6.2 : 7.6),lens.height/4.1,64)}px;opacity:${labelOpacity};`;
-      fallback[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;width:${lens.outerWidth}px;height:${lens.outerHeight}px;border-width:${lens.outerWidth*(1-.758*openingAt(progress,index))/2}px;opacity:${smoothRange(.04,.3,progress)};transform:translate(-50%,-50%) rotate(${pose.roll}rad);`;
+      fallback[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;width:${lens.outerWidth}px;height:${lens.outerHeight}px;--aperture:${.758*openingAt(progress,index)};opacity:${smoothRange(.04,.3,progress)};transform:translate(-50%,-50%) rotate(${pose.roll}rad);`;
     });
     const unit=pose.size*width/(4.25*lensDepthFactor),logoWidth=unit*crystalWidth,logoHeight=unit*crystalHeight;
     const centerX=width/2+(pose.x-.5)*width/lensDepthFactor,centerY=height/2+(pose.y-.5)*height/lensDepthFactor;

@@ -24,6 +24,14 @@ A face da marca usa a textura cristal fornecida, sem reconstrução ou troca da 
 
 O desktop e o mobile usam a mesma sequência. O enquadramento responsivo posiciona o nome junto à pessoa e calcula as aberturas usando as dimensões efetivas da tela. A rolagem é nativa e continua funcionando com mouse, toque e teclado. O primeiro painel foi incluído na ordem de foco para permitir sua navegação por teclado mesmo com menu e CTA ocultos.
 
+### Atualização: O cristal em toda a sequência
+
+A pedido do proprietário, as letras das transições agora usam a superfície cristal dos dois O da arte original, no lugar do material metálico liso. Cada O recebe sua própria região da textura existente, com detalhes do gelo e bordas iridescentes. O mapeamento acompanha a expansão das aberturas e a rotação 3D, preservando os enquadramentos, as lentes e o ritmo de rolagem aprovados.
+
+Os reflexos usam o mesmo relógio da marca inteira e respeitam pausa e movimento reduzido. A cena reutiliza a imagem já carregada, sem ambiente 3D pesado, nova textura externa ou imagem gerada. Na versão sem WebGL, recortes CSS da mesma arte substituem as antigas bordas cinzas. A animação de reserva para quando a cena 3D está pronta ou a abertura está visível.
+
+Trata-se da textura fotográfica da marca aplicada à geometria 3D existente, com reflexos calculados; não foi fornecido um modelo 3D original das letras.
+
 ## Assets
 
 - Origem da paisagem: `C:\Users\anena\Downloads\Trabalho solitário diante do vale.png`, 1448×1086, fornecida pelo usuário.

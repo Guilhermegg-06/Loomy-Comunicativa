@@ -36,9 +36,15 @@ body:has(.focus-experience) { overflow: hidden; background: #050505; }
 .lens-label { position: absolute; transform: translate(-50%,-50%); white-space: pre-line; text-align: center; font-weight: 700; line-height: .92; letter-spacing: -.06em; width: max-content; }
 .is-light .lens-label { color: #111c18; }
 .focus-fallback,.focus-canvas { position: absolute; inset: 0; z-index: 2; }
-.focus-fallback { transition: opacity .2s; }
+.focus-fallback { --crystal-art: url('/media/loomy-crystal.webp'); transition: opacity .2s; }
 .has-webgl .focus-fallback { opacity: 0; }
-.focus-fallback > div { position: absolute; border: clamp(10px,2.8vw,50px) solid #cddfe5; border-radius: 49%; background: transparent; box-shadow: inset 0 1px 2px #fff,0 2px 1px #fff9,7px 5px 0 #566573,9px 6px 0 #c6dae2; }
+.focus-fallback > div { position: absolute; border-radius: 50%; background-image: var(--crystal-art); background-repeat: no-repeat; background-size: 504.587% 200.877%; background-position: 29.932% 63.478%; mask-image: radial-gradient(ellipse closest-side,transparent calc(var(--aperture,.758) * 100% - .5px),#000 calc(var(--aperture,.758) * 100% + .5px)); }
+.focus-fallback > div:nth-child(2) { background-size: 555.556% 204.464%; background-position: 52.275% 62.821%; }
+.focus-fallback > div::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(110deg,transparent 32%,#d9faff80 48%,transparent 64%); background-size: 300% 100%; opacity: .6; }
+@media (prefers-reduced-motion:no-preference) { .focus-fallback > div::after { animation: crystal-letter-reflection 8s linear infinite; } }
+.has-webgl .focus-fallback > div::after,.is-intro .focus-fallback > div::after { animation-play-state: paused; }
+@keyframes crystal-letter-reflection { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@media (max-width:767px) { .focus-fallback { --crystal-art: url('/media/loomy-crystal-mobile.webp'); } }
 .focus-canvas canvas { display: block; width: 100%; height: 100%; }
 .focus-header { position: fixed; z-index: 4; top: 0; left: 0; width: 100%; height: 78px; padding: 22px 3.8%; display: flex; align-items: center; justify-content: space-between; gap: 35px; color: var(--focus-ink); }
 .focus-brand { display: block; width: 105px; flex-shrink: 0; }

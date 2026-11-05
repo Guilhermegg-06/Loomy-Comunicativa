@@ -2,7 +2,7 @@
 
 Vitrine interativa da Loomy, agência alagoana de produção, design e marketing. Replica a estrutura e a sequência observáveis da referência [Grau](https://profitize.com.br/build/landing-pages/grau), usando os dois O da marca como lentes em uma cena contínua.
 
-A experiência abre com a paisagem enviada pelo proprietário e a logo cristal inteira, com reflexos em movimento e sem textos sobrepostos. No primeiro scroll, os dois O da própria marca crescem e conduzem aos oito capítulos aprovados: apresentação, produção, design, marketing, aproximação do processo criativo, novos horizontes, processo e contato. A rolagem, o toque, as setas, os indicadores e o teclado percorrem o mesmo palco.
+A experiência abre com a paisagem enviada pelo proprietário e a logo cristal inteira, com reflexos em movimento e sem textos sobrepostos. No primeiro scroll, os dois O da própria marca crescem e conduzem aos oito capítulos aprovados: apresentação, produção, design, marketing, aproximação do processo criativo, novos horizontes, processo e contato. As letras mantêm a textura cristal da arte em toda a sequência, incluindo o fallback sem WebGL. A rolagem, o toque, as setas, os indicadores e o teclado percorrem o mesmo palco.
 
 [Abertura desktop](docs/preview-valley-desktop.png) · [Abertura mobile](docs/preview-valley-mobile.png) · [Vídeo desktop](docs/preview-valley-desktop.webm) · [Vídeo mobile](docs/preview-valley-mobile.webm).
 

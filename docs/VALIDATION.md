@@ -2,6 +2,8 @@
 
 Branch `design/vale-cristal`, base `8c4144d`. Produção local Next.js 16.4.3. História verificada: paisagem enviada e marca cristal inteira → primeiro scroll pelos O da arte → oito etapas aprovadas → vídeo → briefing local → Instagram informado.
 
+Atualização dos O cristal, sobre `fbaee0b`: as letras 3D usam as duas regiões da textura original da marca em todas as etapas. Inspeção visual em desktop e mobile confirmou detalhes do gelo, bordas iridescentes, fundo escuro, cenário claro e aberturas alinhadas às lentes. O fallback CSS também usa a arte cristal. A coreografia, os textos e os destinos da navegação permanecem os aprovados. A suíte completa foi executada após a atualização, com 17 aprovados e 1 dispensado; build, lint e TypeScript aprovados.
+
 | Verificação | Evidência |
 | --- | --- |
 | Build, lint e tipos | Compilação de produção, ESLint e TypeScript aprovados |
@@ -21,9 +23,9 @@ Capturas: [abertura desktop](preview-valley-desktop.png), [abertura mobile](prev
 
 Os testes usam navegadores locais e emulação mobile, sem aparelhos físicos. Nenhum resultado de CI remota ou deploy é afirmado. Composição, procedência e continuidade em [abertura-vale.md](abertura-vale.md).
 
-## Lighthouse da abertura no vale
+## Lighthouse da abertura no vale, antes da troca dos O
 
-Medição mobile simulada no Lighthouse 13.6.0, com o 3D automático ativo: performance **58**, acessibilidade **100**, boas práticas **100**, SEO **60**. FCP **0,9s**, LCP **5,7s**, CLS **0**, TBT **910ms**. Sem erros de console. `noindex` permanece intencional nesta revisão.
+Medição mobile simulada do commit `fbaee0b`, anterior à troca do material dos O, no Lighthouse 13.6.0, com o 3D automático ativo: performance **58**, acessibilidade **100**, boas práticas **100**, SEO **60**. FCP **0,9s**, LCP **5,7s**, CLS **0**, TBT **910ms**. Sem erros de console. `noindex` permanece intencional nesta revisão. Não houve nova medição Lighthouse na alteração do material.
 
 A primeira leitura da abertura marcou performance 45, LCP 8,2s e TBT 2.860ms. A auditoria identificou que a máscara CSS baixava a textura desktop além da mobile; o painel de processo também mantinha uma referência à imagem maior. A correção dos dois usos remove essa requisição de cerca de 194KB. Uma conferência de rede na versão final confirmou apenas as variantes mobile e pequena da marca. Variação de laboratório impede atribuir toda a diferença de tempo apenas a essa mudança.
 

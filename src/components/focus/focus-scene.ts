@@ -1,4 +1,4 @@
-import { ExtrudeGeometry, Group, Mesh, Path, PerspectiveCamera, PlaneGeometry, Scene, ShaderMaterial, Shape, SRGBColorSpace, TextureLoader, Vector3, WebGLRenderer } from "three";
+import { ExtrudeGeometry, Group, Mesh, Path, PerspectiveCamera, PlaneGeometry, Scene, ShaderMaterial, Shape, SRGBColorSpace, TextureLoader, Vector3, Vector4, WebGLRenderer } from "three";
 import { crystalWidth, crystalHeight, crystalCenter, crystalO, openingAt, crystalOpacityAt, smoothRange, type FocusPose } from "./focus-content";
 import type { Texture } from "three";
 
@@ -16,23 +16,30 @@ export async function createFocusScene(host: HTMLDivElement): Promise<FocusScene
   outline.holes.push(opening);
   const geometry=new ExtrudeGeometry(outline,{depth:.19,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.045,bevelThickness:.045,curveSegments:48});
   geometry.translate(0,0,-.095);
-  // Analytical chrome avoids generating and filtering an environment cube at
-  // startup. Real geometry/normals still drive perspective, glints and the rim.
+  // Reuse the two O surfaces from the supplied logo. Polar UVs keep their ice
+  // detail attached to the existing geometry while the apertures expand.
   const material=new ShaderMaterial({
-    uniforms:{uTint:{value:0},uOpening:{value:1},uOpacity:{value:1}},toneMapped:false,transparent:true,depthWrite:false,
-    vertexShader:`uniform float uOpening; varying vec3 vNormal; varying vec3 vView; varying vec3 vLocal;
-      void main(){ vec3 point=position; float inner=1.-smoothstep(.81,.94,length(point.xy)); point.xy*=mix(1.,uOpening,inner); vec4 p=modelViewMatrix*vec4(point,1.); vNormal=normalize(normalMatrix*normal); vView=-p.xyz; vLocal=point; gl_Position=projectionMatrix*p; }`,
-    fragmentShader:`uniform float uTint; uniform float uOpacity; varying vec3 vNormal; varying vec3 vView; varying vec3 vLocal;
+    uniforms:{uMap:{value:null},uOuter:{value:new Vector4()},uInner:{value:new Vector4()},uTint:{value:0},uTime:{value:0},uOpening:{value:1},uOpacity:{value:1}},toneMapped:false,transparent:true,depthWrite:false,
+    vertexShader:`uniform float uOpening; varying vec3 vNormal; varying vec3 vView; varying vec3 vSource; varying float vFace;
+      void main(){ vec3 point=position; float inner=1.-smoothstep(.81,.94,length(point.xy)); point.xy*=mix(1.,uOpening,inner); vec4 p=modelViewMatrix*vec4(point,1.); vNormal=normalize(normalMatrix*normal); vView=-p.xyz; vSource=position; vFace=abs(normal.z); gl_Position=projectionMatrix*p; }`,
+    fragmentShader:`uniform sampler2D uMap; uniform vec4 uOuter; uniform vec4 uInner; uniform float uTint; uniform float uTime; uniform float uOpacity; varying vec3 vNormal; varying vec3 vView; varying vec3 vSource; varying float vFace;
       void main(){
         vec3 n=normalize(vNormal),v=normalize(vView),r=reflect(-v,n);
-        float wave=sin(vLocal.y*2.8+vLocal.x*.18+r.y*.8);
-        float band=smoothstep(-.72,.55,wave);
-        vec3 chrome=mix(vec3(.055,.105,.14),vec3(.73,.86,.92),band);
-        float fresnel=pow(1.-max(dot(n,v),0.),2.3);
+        vec2 polar=vec2(vSource.x,vSource.y/1.035);
+        vec2 angle=normalize(polar);
+        float radius=clamp((length(polar)-.758)/.242,0.,1.);
+        vec2 artUv=mix(uInner.xy+angle*uInner.zw,uOuter.xy+angle*uOuter.zw,radius);
+        vec4 art=texture2D(uMap,artUv);
+        float fresnel=pow(1.-max(dot(n,v),0.),2.4);
+        float band=.5+.5*sin(vSource.y*3.+r.y*1.8+uTime*.25);
+        vec3 ice=mix(vec3(.07,.28,.48),vec3(.65,.88,.98),band);
+        float face=smoothstep(.15,.95,vFace);
+        vec3 color=mix(ice,art.rgb,face*mix(.35,1.,art.a));
+        float sweep=mod(uTime*.22,1.8)-.3;
+        float shine=exp(-pow((artUv.x+artUv.y*.14-sweep)*11.,2.));
         float glint=pow(max(dot(reflect(-normalize(vec3(-.4,.7,1.)),n),v),0.),65.);
-        float side=.68+.32*abs(n.z);
-        chrome=mix(chrome,chrome*vec3(.86,1.,.6),uTint*.4);
-        vec3 color=mix(chrome*side,vec3(.87,.96,1.),fresnel*.72)+glint*.65;
+        color+=shine*vec3(.25,.38,.5)+fresnel*vec3(.12,.2,.24)+glint*.28;
+        color=mix(color,color*vec3(.96,1.,.92),uTint*.18);
         gl_FragColor=vec4(color,uOpacity);
         #include <colorspace_fragment>
       }`,
@@ -43,6 +50,19 @@ export async function createFocusScene(host: HTMLDivElement): Promise<FocusScene
   try {texture=await new TextureLoader().loadAsync(matchMedia("(max-width:767px)").matches ? "/media/loomy-crystal-mobile.webp" : "/media/loomy-crystal.webp");}
   catch(error) {geometry.dispose();materials.forEach(m=>m.dispose());renderer.dispose();throw error;}
   texture.colorSpace=SRGBColorSpace;
+  texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
+  // Original 1100x458 artwork coordinates, independent of texture resolution.
+  const surfaces=[
+    {outer:[373,260,109,114],inner:[371.25,262,38.75,40]},
+    {outer:[568,259,99,112],inner:[567.5,261.375,32.5,38.75]},
+  ];
+  materials.forEach((m,index)=>{
+    m.uniforms.uMap.value=texture;
+    for(const key of ["outer","inner"] as const) {
+      const [x,y,rx,ry]=surfaces[index][key];
+      (m.uniforms[key==="outer" ? "uOuter" : "uInner"].value as Vector4).set(x/1100,1-y/458,rx/1100,ry/458);
+    }
+  });
   const logoGeometry=new PlaneGeometry(crystalWidth,crystalHeight);
   const logoMaterial=new ShaderMaterial({
     uniforms:{uMap:{value:texture},uTime:{value:0},uOpacity:{value:1}},transparent:true,depthWrite:false,toneMapped:false,
@@ -76,7 +96,7 @@ export async function createFocusScene(host: HTMLDivElement): Promise<FocusScene
     object.position.set((pose.x-.5)*visibleWidth,(.5-pose.y)*visibleHeight,0);
     object.rotation.set(pose.pitch,pose.yaw,pose.roll);
     object.updateMatrixWorld(true);camera.updateMatrixWorld(true);
-    materials.forEach((m,index)=>{m.uniforms.uTint.value=pose.tint;m.uniforms.uOpening.value=openingAt(progress,index);m.uniforms.uOpacity.value=smoothRange(.04,.3,progress);letters[index].visible=progress>.001;});
+    materials.forEach((m,index)=>{m.uniforms.uTint.value=pose.tint;m.uniforms.uTime.value=time;m.uniforms.uOpening.value=openingAt(progress,index);m.uniforms.uOpacity.value=smoothRange(.04,.3,progress);letters[index].visible=progress>.001;});
     logoMaterial.uniforms.uOpacity.value=crystalOpacityAt(progress);logoMaterial.uniforms.uTime.value=time;logo.visible=logoMaterial.uniforms.uOpacity.value>0;
     renderer.render(scene,camera);
     return [-1.08,1.08].map((offset,index)=>{
