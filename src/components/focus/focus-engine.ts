@@ -1,13 +1,13 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { chapters, poseAt, type FocusPose } from "./focus-content";
+import { chapters, poseAt, lastChapter, smoothRange, openingAt, crystalOpacityAt, crystalWidth, crystalHeight, crystalCenter, crystalO, lensDepthFactor, type FocusPose } from "./focus-content";
 import type { FocusScene, LensProjection } from "./focus-scene";
 
-function fallbackProjection(pose:FocusPose,width:number,height:number):LensProjection[] {
-  const unit=pose.size*width/4.25;
-  return [-1.08,1.08].map(offset=>{
-    const x=pose.x*width+offset*unit*Math.cos(pose.yaw),y=pose.y*height-offset*unit*Math.sin(pose.roll);
-    const rw=unit*.758*Math.cos(pose.yaw),rh=unit*.787*Math.cos(pose.pitch);
+function fallbackProjection(pose:FocusPose,width:number,height:number,progress:number):LensProjection[] {
+  const unit=pose.size*width/(4.25*lensDepthFactor);
+  return [-1.08,1.08].map((offset,index)=>{
+    const x=width/2+(pose.x-.5)*width/lensDepthFactor+offset*unit*Math.cos(pose.yaw),y=height/2+(pose.y-.5)*height/lensDepthFactor-offset*unit*Math.sin(pose.roll);
+    const opening=openingAt(progress,index),rw=unit*.758*opening*Math.cos(pose.yaw),rh=unit*.787*opening*Math.cos(pose.pitch);
     const points=Array.from({length:48},(_,i)=>{const angle=i/48*Math.PI*2;return `${(x+Math.cos(angle)*rw).toFixed(2)},${(y+Math.sin(angle)*rh).toFixed(2)}`;}).join(" ");
     return {points,x,y,width:rw*2,height:rh*2,outerWidth:unit*2,outerHeight:unit*2.07};
   });
@@ -22,14 +22,16 @@ export function initializeFocus(root:HTMLDivElement,scroller:HTMLElement,onActiv
   const labels=Array.from(root.querySelectorAll<HTMLElement>("[data-lens-label]"));
   const fallback=Array.from(root.querySelectorAll<HTMLElement>("[data-fallback-o]"));
   const host=root.querySelector<HTMLDivElement>(".focus-canvas")!;
+  const landscape=root.querySelector<HTMLElement>(".intro-landscape")!,foreground=root.querySelector<HTMLElement>(".intro-foreground")!,logo=root.querySelector<HTMLElement>(".intro-logo")!;
   let scene:FocusScene|null=null,disposed=false,lastActive=-1,lastFrame=0,lastProgress=-1,lastText="";
+  let motionTime=0,previousTime=0;
   let width=scroller.clientWidth,height=scroller.clientHeight;
   const pointer={x:0,y:0,actualX:0,actualY:0};
   const quiet=()=>preference.matches || document.documentElement.dataset.motion==="paused";
-  const tween=gsap.to(state,{progress:7,ease:"none",scrollTrigger:{scroller,trigger:scroller.querySelector(".focus-waypoint"),start:"top top",end:()=>`+=${scroller.scrollHeight-scroller.clientHeight}`,scrub:.55,invalidateOnRefresh:true}});
+  const tween=gsap.to(state,{progress:lastChapter,ease:"none",scrollTrigger:{scroller,trigger:scroller.querySelector(".focus-waypoint"),start:"top top",end:()=>`+=${scroller.scrollHeight-scroller.clientHeight}`,scrub:.55,invalidateOnRefresh:true}});
   function updatePanels(progress:number) {
     const index=Math.floor(progress),fraction=progress-index;
-    const t=gsap.utils.clamp(0,1,(fraction-.14)/.72),blend=t*t*(3-2*t);
+    const t=gsap.utils.clamp(0,1,(fraction-.14)/.72),blend=index===0 ? smoothRange(.52,1,progress) : t*t*(3-2*t);
     for (const panel of panels) {
       const n=Number(panel.dataset.worldPanel);
       const opacity=n===index ? 1-blend : n===index+1 ? blend : 0;
@@ -37,29 +39,39 @@ export function initializeFocus(root:HTMLDivElement,scroller:HTMLElement,onActiv
       panel.style.visibility=opacity>0 ? "visible" : "hidden";
       panel.style.transform=`translate3d(0,${n===index ? -blend*18 : (1-blend)*18}px,0)`;
     }
+    landscape.style.opacity=String(1-smoothRange(.18,.86,progress));
+    // Release the subject before the landscape darkens, avoiding a bright cutout.
+    foreground.style.opacity=String(1-smoothRange(.015,.12,progress));
+    root.style.setProperty("--intro-ui",String(smoothRange(.7,1,progress)));
   }
   function draw(time:number,force=false) {
     if (disposed || document.hidden) return;
-    const still=quiet(),progress=gsap.utils.clamp(0,7,still ? scroller.scrollTop/height : state.progress);
+    const still=quiet(),progress=gsap.utils.clamp(0,lastChapter,still ? scroller.scrollTop/height : state.progress);
     if (!force && time-lastFrame<(matchMedia("(pointer:coarse)").matches ? 1/30 : 1/45)) return;
     if (!force && still && Math.abs(progress-lastProgress)<.0001) return;
     lastFrame=time;
+    if(!still) motionTime+=Math.min(Math.max(0,time-previousTime),.05);
+    previousTime=time;
     const active=Math.round(progress);
     if (active!==lastActive) {lastActive=active;onActive(active);history.replaceState(null,"",`#${chapters[active].id}`);}
     if (progress!==lastProgress) {updatePanels(progress);lastProgress=progress;}
-    const pose=poseAt(progress,width<768);
+    const pose=poseAt(progress,width,height),introBlend=smoothRange(0,1,progress);
     pointer.actualX+=(pointer.x-pointer.actualX)*.08;pointer.actualY+=(pointer.y-pointer.actualY)*.08;
-    if (!still) {pose.yaw+=pointer.actualX*.12+Math.sin(time*.47)*.018;pose.pitch+=pointer.actualY*.075+Math.sin(time*.36)*.012;}
-    const projections=scene?.render(pose,width,height) ?? fallbackProjection(pose,width,height);
-    const labelMode=progress<.8 ? "hero" : progress<4.5 ? "film" : "coast";
+    if (!still) {pose.yaw+=(pointer.actualX*.12+Math.sin(time*.47)*.018)*introBlend;pose.pitch+=(pointer.actualY*.075+Math.sin(time*.36)*.012)*introBlend;}
+    const projections=scene?.render(pose,width,height,progress,motionTime) ?? fallbackProjection(pose,width,height,progress);
+    const experienceProgress=progress-1;
+    const labelMode=experienceProgress<.8 ? "hero" : experienceProgress<4.5 ? "film" : "coast";
     const text=labelMode==="hero" ? "Ideias\nem\nfoco." : labelMode==="film" ? "Da ideia\nao último\nframe." : "Ideias que\natravessam.";
-    const labelOpacity=labelMode==="hero" ? Math.max(0,1-progress*2) : Math.max(0,1-Math.abs(progress-(labelMode==="film" ? 4 : 5))*2.4);
+    const labelOpacity=(labelMode==="hero" ? Math.max(0,1-Math.max(0,experienceProgress)*2) : Math.max(0,1-Math.abs(experienceProgress-(labelMode==="film" ? 4 : 5))*2.4))*smoothRange(.5,1,progress);
     if (text!==lastText) { for (const label of labels) label.textContent=text;lastText=text; }
     projections.forEach((lens,index)=>{
       clips[index].setAttribute("points",lens.points);
       labels[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;font-size:${Math.min(lens.width/(labelMode==="hero" ? 4.1 : labelMode==="film" ? 6.2 : 7.6),lens.height/4.1,64)}px;opacity:${labelOpacity};`;
-      fallback[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;width:${lens.outerWidth}px;height:${lens.outerHeight}px;transform:translate(-50%,-50%) rotate(${pose.roll}rad);`;
+      fallback[index].style.cssText=`left:${lens.x}px;top:${lens.y}px;width:${lens.outerWidth}px;height:${lens.outerHeight}px;border-width:${lens.outerWidth*(1-.758*openingAt(progress,index))/2}px;opacity:${smoothRange(.04,.3,progress)};transform:translate(-50%,-50%) rotate(${pose.roll}rad);`;
     });
+    const unit=pose.size*width/(4.25*lensDepthFactor),logoWidth=unit*crystalWidth,logoHeight=unit*crystalHeight;
+    const centerX=width/2+(pose.x-.5)*width/lensDepthFactor,centerY=height/2+(pose.y-.5)*height/lensDepthFactor;
+    logo.style.cssText=`left:${centerX-crystalCenter*logoWidth}px;top:${centerY-crystalO.y*logoHeight}px;width:${logoWidth}px;height:${logoHeight}px;opacity:${crystalOpacityAt(progress)};`;
   }
   // GSAP's ticker has its own epoch. Resize/pause callbacks use performance.now;
   // keep one clock so those callbacks cannot stall rendering until it catches up.
@@ -69,10 +81,10 @@ export function initializeFocus(root:HTMLDivElement,scroller:HTMLElement,onActiv
   function keyboard(event:KeyboardEvent) {
     if (event.altKey || event.ctrlKey || event.metaKey || event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement || document.querySelector("dialog[open]")) return;
     const current=Math.round(scroller.scrollTop/height);
-    if (["ArrowDown","PageDown"].includes(event.key) || (event.key===" " && event.target===scroller)) {event.preventDefault();go(Math.min(7,current+1));}
+    if (["ArrowDown","PageDown"].includes(event.key) || (event.key===" " && event.target===scroller)) {event.preventDefault();go(Math.min(lastChapter,current+1));}
     else if (["ArrowUp","PageUp"].includes(event.key)) {event.preventDefault();go(Math.max(0,current-1));}
     else if (event.key==="Home") {event.preventDefault();go(0);}
-    else if (event.key==="End") {event.preventDefault();go(7);}
+    else if (event.key==="End") {event.preventDefault();go(lastChapter);}
   }
   function move(event:PointerEvent) {if (event.pointerType!=="mouse") return;pointer.x=(event.clientX/width-.5)*2;pointer.y=(event.clientY/height-.5)*2;}
   function resetPointer() {pointer.x=0;pointer.y=0;}

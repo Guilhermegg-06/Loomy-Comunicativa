@@ -1,5 +1,13 @@
 # Assets e procedência
 
+## Abertura no vale — 05/11/2026
+
+- Origem: `Trabalho solitário diante do vale.png`, 1448×1086, enviada pelo usuário.
+- `loomy-valley.webp`: 1448×1086, 205.442 bytes; conversão WebP para a abertura.
+- `loomy-valley-mobile.webp`: 1024×768, 101.906 bytes; variante responsiva.
+- A marca é a mesma arte cristal documentada abaixo, com reflexo animado em shader e fallback CSS. Não há logo ou texto gravado na paisagem.
+- Composição, recorte de primeiro plano e extração dos O: [abertura-vale.md](../../docs/abertura-vale.md). Nenhuma nova geração de imagem nesta atualização.
+
 ## Loomy em foco — 04/11/2026
 
 - `loomy-coast.webp`: litoral conceitual original gerado com ImageGen integrado, 1536×1024, 107.422 bytes.

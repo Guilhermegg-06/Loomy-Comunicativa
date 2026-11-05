@@ -9,11 +9,15 @@ test("WebKit mobile mantém a nitidez e a sequência de capítulos",async({page}
   await expect.poll(()=>page.locator(".focus-experience").evaluate(el=>el.getAttribute("data-3d")==="ready" || el.getAttribute("data-renderer")==="css"),{timeout:25_000}).toBe(true);
   const renderer=await page.locator(".focus-experience").getAttribute("data-3d");
   testInfo.annotations.push({type:"renderer",description:renderer==="ready" ? "WebGL ativo" : "Fallback CSS: ambiente WebKit sem WebGL"});
+  await expect(page.locator(".focus-header")).toBeHidden();
+  await page.screenshot({path:"test-results/webkit-valley-intro.png"});
   await expect(page.locator('[data-lens-clip="0"]')).not.toHaveAttribute("points","0,0");
   await expect(page.locator(".focus-clear")).toHaveCSS("clip-path",/loomy-focus-lenses/);
+  await page.keyboard.press("PageDown");
+  await expect(page.locator(".focus-experience")).toHaveAttribute("data-stage","1");
   await page.getByRole("navigation",{name:"Navegação principal"}).getByRole("link",{name:"Design",exact:true}).click();
   await expect(page.locator(".caption-title")).toHaveText("Design");
-  for(const index of [4,5,6,7]) {
+  for(const index of [5,6,7,8]) {
     await page.locator(".focus-scroll").evaluate((el,n)=>el.scrollTo({top:el.clientHeight*n,behavior:"instant"}),index);
     await expect(page.locator(".focus-experience")).toHaveAttribute("data-stage",String(index));
     await page.screenshot({path:`test-results/webkit-focus-${index}.png`});

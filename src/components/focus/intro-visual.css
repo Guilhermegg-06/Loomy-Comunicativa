@@ -1,0 +1,27 @@
+/* The opening uses only the supplied landscape and crystal artwork. The same
+   measured O centers anchor the bitmap, WebGL logo and the first scroll pose. */
+.world-intro { background: transparent; }
+.focus-scroll:focus-visible { outline: 2px solid #d6fa00; outline-offset: -2px; }
+.intro-landscape { position: absolute; inset: 0; pointer-events: none; }
+.intro-landscape img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.intro-logo { --logo-width: min(78vw,96.07svh); position: absolute; z-index: 2; width: var(--logo-width); height: calc(var(--logo-width) * .416363636); left: calc(50% - var(--logo-width) / 2); top: calc(51.8svh - var(--logo-width) * .34141818); pointer-events: none; }
+.intro-logo img { object-fit: contain; }
+.has-webgl .intro-logo { visibility: hidden; }
+.intro-sheen { position: absolute; inset: 0; overflow: hidden; mask-image: url('/media/loomy-crystal.webp'); mask-size: 100% 100%; mask-repeat: no-repeat; }
+.intro-sheen-sweep { position: absolute; top: -50%; bottom: -50%; left: -65%; width: 55%; transform: translateX(-100%) rotate(16deg); background: linear-gradient(90deg,transparent,#e5faffa6,transparent); mix-blend-mode: screen; opacity: .7; }
+.intro-foreground { position: absolute; z-index: 3; left: 50%; top: 50%; width: max(100vw,133.333333svh); height: max(75vw,100svh); transform: translate(-50%,-50%); pointer-events: none; clip-path: polygon(47.3% 49.8%,48.4% 50.2%,48.9% 51.5%,48.5% 53.7%,48.4% 54.2%,50.2% 55.2%,51.7% 58.8%,56.7% 58.8%,56.7% 69.8%,40.9% 69.8%,40.9% 58.8%,42.9% 58.8%,44.4% 55%,46.1% 54.1%,46.2% 53.5%,45.9% 52%,46.3% 50.5%); }
+.intro-foreground img { width: 100%; height: 100%; }
+.focus-header,.focus-interface { opacity: var(--intro-ui,0); }
+.is-intro .focus-header,.is-intro .focus-interface { visibility: hidden; }
+.is-intro .motion-toggle { width: 35px; height: 35px; min-height: 35px; padding: 10px; justify-content: center; border-color: #e5f0e699; background: #06100b55; color: white; }
+.is-intro .motion-toggle > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.is-intro .motion-toggle svg { flex-shrink: 0; }
+@media (prefers-reduced-motion:no-preference) {
+  .intro-sheen-sweep { animation: crystal-intro-reflection 8s ease-in-out infinite; }
+  .focus-experience:not(.is-intro) .intro-sheen-sweep,.has-webgl .intro-sheen-sweep { animation-play-state: paused; }
+}
+@keyframes crystal-intro-reflection { 0%,8% { transform: translateX(-100%) rotate(16deg); } 77%,100% { transform: translateX(400%) rotate(16deg); } }
+@media (max-width:767px) {
+  .intro-logo { --logo-width: min(94vw,96.07svh); }
+  .intro-sheen { mask-image: url('/media/loomy-crystal-mobile.webp'); }
+}

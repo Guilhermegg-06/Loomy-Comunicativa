@@ -2,11 +2,11 @@
 
 Vitrine interativa da Loomy, agência alagoana de produção, design e marketing. Replica a estrutura e a sequência observáveis da referência [Grau](https://profitize.com.br/build/landing-pages/grau), usando os dois O da marca como lentes em uma cena contínua.
 
-A experiência tem oito capítulos de tela inteira: apresentação, produção, design, marketing, aproximação do processo criativo, novos horizontes, processo e contato. A rolagem, o toque, as setas, os indicadores e o teclado percorrem o mesmo palco. A nitidez acompanha as aberturas das letras em perspectiva.
+A experiência abre com a paisagem enviada pelo proprietário e a logo cristal inteira, com reflexos em movimento e sem textos sobrepostos. No primeiro scroll, os dois O da própria marca crescem e conduzem aos oito capítulos aprovados: apresentação, produção, design, marketing, aproximação do processo criativo, novos horizontes, processo e contato. A rolagem, o toque, as setas, os indicadores e o teclado percorrem o mesmo palco.
 
-[Prévia desktop](docs/preview-focus-desktop.png) · [Prévia mobile](docs/preview-focus-mobile.png) · [Vídeo desktop](docs/preview-focus-desktop.webm) · [Vídeo mobile](docs/preview-focus-mobile.webm).
+[Abertura desktop](docs/preview-valley-desktop.png) · [Abertura mobile](docs/preview-valley-mobile.png) · [Vídeo desktop](docs/preview-valley-desktop.webm) · [Vídeo mobile](docs/preview-valley-mobile.webm).
 
-[Direção, referência e procedência](docs/design-grau.md). Resultados reais em [VALIDATION.md](docs/VALIDATION.md).
+[Abertura, reflexo e continuidade dos O](docs/abertura-vale.md). [Referência da experiência aprovada](docs/design-grau.md). Resultados reais em [VALIDATION.md](docs/VALIDATION.md).
 
 ## Rodar localmente
 
@@ -50,6 +50,6 @@ O briefing é preparado no navegador. O botão tenta copiá-lo e oferece o Insta
 
 ## Revisão e Git
 
-Branch desta entrega: `design/grau-loomy`, baseada em `7952d4e` da `design/topo-campo`. A fundação ainda não foi integrada à main; considerar esse encadeamento antes de uma PR. A versão Campo e a implementação cristal permanecem no histórico e em seus componentes antigos.
+Branch desta entrega: `design/vale-cristal`, baseada em `8c4144d` da `design/grau-loomy`. A fundação ainda não foi integrada à main; considerar esse encadeamento antes de uma PR. As versões anteriores permanecem no histórico e em seus componentes.
 
 Sem merge ou deploy de produção. `noindex` permanece ativo para revisão. Domínio canônico e OG final dependem da publicação aprovada. A fotografia de litoral é uma ambientação gerada por IA e não representa um cliente ou produção real. Textos comerciais continuam sujeitos à aprovação do proprietário.

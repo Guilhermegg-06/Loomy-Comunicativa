@@ -1,4 +1,35 @@
-# Validação: Loomy em foco — 04/11/2026
+# Validação: abertura cristal no vale — 05/11/2026
+
+Branch `design/vale-cristal`, base `8c4144d`. Produção local Next.js 16.4.3. História verificada: paisagem enviada e marca cristal inteira → primeiro scroll pelos O da arte → oito etapas aprovadas → vídeo → briefing local → Instagram informado.
+
+| Verificação | Evidência |
+| --- | --- |
+| Build, lint e tipos | Compilação de produção, ESLint e TypeScript aprovados |
+| Chromium desktop/mobile e WebKit mobile | 17 testes aprovados; 1 dispensado por repetir o fallback compartilhado |
+| Abertura | Paisagem e logo responsivas, cabeçalho e interface ocultos/inertes; apenas o ícone de pausa permanece visível |
+| Reflexo | Capturas do canvas em tempos diferentes confirmam o reflexo em movimento; pausa e movimento reduzido preservados |
+| Primeiro scroll | Centros projetados partem das aberturas medidas da logo; crescimento intermediário e mistura da paisagem verificados |
+| Continuidade | Mouse, toque e teclado chegam à apresentação dos O e seguem aos serviços; vídeo, contato e links diretos preservados |
+| Acessibilidade | Axe WCAG 2.0/2.1 A/AA e 2.2 AA sem violações nas etapas 0, 1, 2, 5, 6, 7 e 8 em Chromium e no contato WebKit |
+| Responsividade e fallback | Sem overflow horizontal nos tamanhos testados; sequência funcional sem WebGL e com movimento reduzido |
+| Mídia e briefing | Vídeo completo com áudio, fechamento/retorno de foco, rascunho local, clipboard e alternativa manual aprovados |
+| Console | Sem erros de página na navegação gravada em desktop e mobile e nos fluxos testados |
+
+A validação corrigiu dois problemas: o recorte da pessoa agora sai antes de a paisagem escurecer, evitando um halo; a região de rolagem entrou na ordem de foco para permitir teclado mesmo com a interface da abertura oculta. A máscara de reflexo CSS e a foto da marca na etapa de processo usam a variante mobile, evitando baixar a textura desktop adicional nesse dispositivo.
+
+Capturas: [abertura desktop](preview-valley-desktop.png), [abertura mobile](preview-valley-mobile.png), [OO desktop](preview-valley-desktop-focus.png) e [OO mobile](preview-valley-mobile-focus.png). Gravações da aplicação real, sem edição para simular transições: [desktop](preview-valley-desktop.webm) e [mobile](preview-valley-mobile.webm).
+
+Os testes usam navegadores locais e emulação mobile, sem aparelhos físicos. Nenhum resultado de CI remota ou deploy é afirmado. Composição, procedência e continuidade em [abertura-vale.md](abertura-vale.md).
+
+## Lighthouse da abertura no vale
+
+Medição mobile simulada no Lighthouse 13.6.0, com o 3D automático ativo: performance **58**, acessibilidade **100**, boas práticas **100**, SEO **60**. FCP **0,9s**, LCP **5,7s**, CLS **0**, TBT **910ms**. Sem erros de console. `noindex` permanece intencional nesta revisão.
+
+A primeira leitura da abertura marcou performance 45, LCP 8,2s e TBT 2.860ms. A auditoria identificou que a máscara CSS baixava a textura desktop além da mobile; o painel de processo também mantinha uma referência à imagem maior. A correção dos dois usos remove essa requisição de cerca de 194KB. Uma conferência de rede na versão final confirmou apenas as variantes mobile e pequena da marca. Variação de laboratório impede atribuir toda a diferença de tempo apenas a essa mudança.
+
+LCP e bloqueio da main thread continuam acima das metas. É necessário otimizar a preparação do 3D e medir em aparelhos físicos antes de considerar desempenho mobile concluído. As capturas e os testes de interação não substituem essa medição; não foi medido INP real. Relatórios locais brutos: `.tools/lighthouse-valley.json` e `.tools/lighthouse-valley-final.json`, ignorados pelo Git.
+
+## Histórico: Loomy em foco — 04/11/2026
 
 Branch `design/grau-loomy`, base `7952d4e`. Produção local Next.js 16.4.3. História verificada: chegada à vitrine → rolagem pelos capítulos → foco projetado nos O → vídeo de apresentação → briefing local → link para o Instagram informado.
 
@@ -21,7 +52,7 @@ A inspeção encontrou um atraso de atualização após pausa/resize causado por
 
 Prévias e gravações da sequência ficam em `docs/preview-focus-*`. Direção, limitações de fidelidade e prompt da foto original estão em [design-grau.md](design-grau.md). O vídeo de navegação usa a aplicação real, sem edição para simular transições. Os testes foram em navegadores locais/emulados, não em aparelhos físicos. A CI foi atualizada para instalar Chromium e WebKit; não há afirmação de execução remota aprovada.
 
-## Lighthouse da experiência final
+### Lighthouse da experiência Grau (histórico)
 
 Medição mobile simulada com 3D automático ativo: performance **75**, acessibilidade **100**, boas práticas **100**, SEO **63**. FCP e LCP **1,0s**, CLS **0,023**, TBT **1.270ms**. Sem erros de console. O `noindex` explica a limitação intencional de SEO nesta revisão.
 
@@ -52,7 +83,7 @@ Após o acabamento, os dois fluxos 3D passaram novamente. O Lighthouse apontou �
 
 Prévias: [desktop](preview-campo.png) e [celular](preview-campo-mobile.png). [Referência, decisões e prompt da cena original](design-campo.md). Não houve deploy; os resultados locais não afirmam aprovação de CI remota. O `noindex` continua intencional na versão de revisão.
 
-## Lighthouse do topo Campo
+### Lighthouse do topo Campo (histórico)
 
 Última medição mobile simulada: performance **76**, acessibilidade **100**, boas práticas **100**, SEO **63**. FCP **1,2s**, LCP **3,5s**, CLS **0**, TBT **550ms**. Sem erros de console. O relatório confirmou que os contornos/WebGL não carregaram automaticamente no mobile e que a imagem responsiva da cena transferiu cerca de 29KB.
 
@@ -78,7 +109,7 @@ Executada localmente em 25/10/2026, Node 22.20.0, Next.js 16.4.3, Chromium Playw
 | Novo vídeo | Reprodução com 720×1280, duração integral entre 20 e 22s, som não silenciado e arquivo novo confirmados |
 | Console | Sem erros nos fluxos e no Lighthouse final |
 
-## Lighthouse mobile simulado
+### Lighthouse mobile da versão cristal (histórico)
 
 Última medição local: performance **86**, acessibilidade **100**, boas práticas **100**, SEO **63**. FCP **0,9s**, LCP **3,2s**, CLS **0**, TBT **320ms**. Resultados de laboratório, não métricas de campo.
 
